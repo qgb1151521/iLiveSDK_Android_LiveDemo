@@ -4,28 +4,40 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-    <TextView
-        android:textSize="30dp"
-        android:layout_margin="10dp"
-        android:text="@string/livesdk_sdk_demo"
+
+    <LinearLayout
+        android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
-    <TextView
-        android:textSize="20dp"
-        android:layout_margin="10dp"
-        android:text="@string/livesdk_demo_ilivesdk_intr"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content">
+        <TextView
+            android:textSize="30dp"
+            android:layout_margin="10dp"
+            android:text="@string/livesdk_sdk_demo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+        <TextView
+            android:textSize="20dp"
+            android:layout_margin="20dp"
+            android:text="@string/livesdk_demo_ilivesdk_intr"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
 
     <com.tencent.ilivedemo.view.LineMenuView
+        android:id="@+id/lmv_host"
         lmvattr:icon = "@mipmap/ic_ilvb"
         lmvattr:title = "开播"
+        android:clickable="true"
+        android:onClick="onClick"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
     <com.tencent.ilivedemo.view.LineMenuView
+        android:id="@+id/lmv_guest"
         lmvattr:icon = "@mipmap/ic_ilvb"
         lmvattr:title = "观看"
+        android:clickable="true"
+        android:onClick="onClick"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 </LinearLayout>
