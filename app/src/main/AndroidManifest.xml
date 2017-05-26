@@ -18,6 +18,9 @@
         <activity android:name=".ui.MenuActivity" android:screenOrientation="portrait" />
         <activity android:name=".demos.DemoHost" android:screenOrientation="portrait" />
         <activity android:name=".demos.DemoGuest" android:screenOrientation="portrait" />
+        <activity android:name=".demos.DemoLiveGuest" android:screenOrientation="portrait" />
+        <activity android:name=".demos.DemoCross" android:screenOrientation="portrait" />
+        <activity android:name=".demos.DemoBtu" android:screenOrientation="portrait" />
     </application>
 
 </manifest>

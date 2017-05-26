@@ -1,8 +1,8 @@
 package com.tencent.ilivedemo;
 
 import android.app.Application;
-import android.util.Log;
 
+import com.tencent.ilivedemo.model.MessageObservable;
 import com.tencent.ilivesdk.ILiveSDK;
 import com.tencent.livesdk.ILVLiveConfig;
 import com.tencent.livesdk.ILVLiveManager;
@@ -19,7 +19,8 @@ public class DemoApp extends Application {
         if(MsfSdkUtils.isMainProcess(this)){
             // 初始化LiveSDK
             ILiveSDK.getInstance().initSdk(this, 1400028096, 11851);
-            ILVLiveManager.getInstance().init(new ILVLiveConfig());
+            ILVLiveManager.getInstance().init(new ILVLiveConfig()
+                    .setLiveMsgListener(MessageObservable.getInstance()));
         }
     }
 }

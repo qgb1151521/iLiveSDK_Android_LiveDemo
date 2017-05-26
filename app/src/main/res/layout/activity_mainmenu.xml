@@ -26,7 +26,7 @@
     <com.tencent.ilivedemo.view.LineMenuView
         android:id="@+id/lmv_host"
         lmvattr:icon = "@mipmap/ic_ilvb"
-        lmvattr:title = "开播"
+        lmvattr:title = "@string/str_menu_host"
         android:clickable="true"
         android:onClick="onClick"
         android:layout_width="match_parent"
@@ -34,8 +34,35 @@
 
     <com.tencent.ilivedemo.view.LineMenuView
         android:id="@+id/lmv_guest"
+        lmvattr:icon = "@mipmap/ic_play"
+        lmvattr:title = "@string/str_menu_guest"
+        android:clickable="true"
+        android:onClick="onClick"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <com.tencent.ilivedemo.view.LineMenuView
+        android:id="@+id/lmv_live_guest"
+        lmvattr:icon = "@mipmap/ic_play"
+        lmvattr:title = "@string/str_menu_live_guest"
+        android:clickable="true"
+        android:onClick="onClick"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <com.tencent.ilivedemo.view.LineMenuView
+        android:id="@+id/lmv_cross"
         lmvattr:icon = "@mipmap/ic_ilvb"
-        lmvattr:title = "观看"
+        lmvattr:title = "@string/str_menu_cross"
+        android:clickable="true"
+        android:onClick="onClick"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <com.tencent.ilivedemo.view.LineMenuView
+        android:id="@+id/lmv_beauty"
+        lmvattr:icon = "@mipmap/ic_btu"
+        lmvattr:title = "@string/str_menu_beauty"
         android:clickable="true"
         android:onClick="onClick"
         android:layout_width="match_parent"
