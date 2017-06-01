@@ -132,7 +132,7 @@ public class DemoHost extends Activity implements View.OnClickListener, ILVLiveC
     }
 
     private Context getContenxt(){
-        return this;
+        return DemoHost.this;
     }
 
     // 添加消息
