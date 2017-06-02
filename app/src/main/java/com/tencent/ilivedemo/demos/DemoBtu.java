@@ -122,6 +122,9 @@ public class DemoBtu extends Activity implements View.OnClickListener, ILVLiveCo
                 else
                     llBeautyControl.setVisibility(View.VISIBLE);
                 break;
+            case R.id.iv_return:
+                finish();
+                break;
         }
     }
 

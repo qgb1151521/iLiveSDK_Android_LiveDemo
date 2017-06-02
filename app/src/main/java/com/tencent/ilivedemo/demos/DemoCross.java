@@ -112,6 +112,9 @@ public class DemoCross extends Activity implements View.OnClickListener, ILVLive
                 ((ImageView)findViewById(R.id.iv_mic)).setImageResource(
                         isMicOn ? R.mipmap.ic_mic_off : R.mipmap.ic_mic_on);
                 break;
+            case R.id.iv_return:
+                finish();
+                break;
         }
     }
 
