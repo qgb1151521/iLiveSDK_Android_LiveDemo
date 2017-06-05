@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/colorBack"
+        >
     
     <com.tencent.ilivesdk.view.AVRootView
         android:id="@+id/arv_root"
@@ -26,6 +28,7 @@
             android:inputType="number"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:hint="请输入房间号 数字"
             android:layout_weight="1"/>
         <TextView
             android:id="@+id/tv_create"

@@ -58,7 +58,7 @@ public class DemoHost extends Activity implements View.OnClickListener, ILVLiveC
 
         arvRoot = (AVRootView)findViewById(R.id.arv_root);
         etRoom = (DemoEditText)findViewById(R.id.et_room);
-        etRoom.setText(""+UserInfo.getInstance().getRoom());
+//        etRoom.setText(""+UserInfo.getInstance().getRoom());
         tvMsg = (TextView)findViewById(R.id.tv_msg);
 
         ILVLiveManager.getInstance().setAvVideoView(arvRoot);
