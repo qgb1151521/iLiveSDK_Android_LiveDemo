@@ -82,6 +82,9 @@ public class DemoGuest extends Activity implements View.OnClickListener, ILVLive
             case R.id.tv_send:
                 sendMsg();
                 break;
+            case R.id.iv_return:
+                finish();
+                break;
         }
     }
 
