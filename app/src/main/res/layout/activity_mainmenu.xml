@@ -68,4 +68,13 @@
         android:onClick="onClick"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
+
+    <com.tencent.ilivedemo.view.LineMenuView
+        android:id="@+id/lmv_replay"
+        lmvattr:icon = "@mipmap/ic_play"
+        lmvattr:title = "@string/str_menu_replay"
+        android:clickable="true"
+        android:onClick="onClick"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
 </LinearLayout>

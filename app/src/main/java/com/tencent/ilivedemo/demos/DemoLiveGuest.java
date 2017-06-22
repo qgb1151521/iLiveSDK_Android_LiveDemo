@@ -160,7 +160,7 @@ public class DemoLiveGuest extends Activity implements View.OnClickListener, ILV
         UserInfo.getInstance().setRoom(ILiveRoomManager.getInstance().getRoomId());
         UserInfo.getInstance().writeToCache(this);
         etRoom.setEnabled(false);
-        findViewById(R.id.tv_create).setVisibility(View.INVISIBLE);
+        findViewById(R.id.tv_join).setVisibility(View.INVISIBLE);
         findViewById(R.id.ll_controller).setVisibility(View.VISIBLE);
     }
 

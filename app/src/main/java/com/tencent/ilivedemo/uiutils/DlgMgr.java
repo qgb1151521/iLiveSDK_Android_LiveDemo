@@ -31,9 +31,9 @@ public class DlgMgr {
 
     public static AlertDialog showAlertDlg(Context context, AlertDialog.Builder builder) {
         AlertDialog alertDialog = builder.create();
-        alertDialog.setCanceledOnTouchOutside(false);
-        customDemoDialg(context, alertDialog);
+        alertDialog.setCanceledOnTouchOutside(true);
         alertDialog.show();
+        customDemoDialg(context, alertDialog);
         return alertDialog;
     }
 

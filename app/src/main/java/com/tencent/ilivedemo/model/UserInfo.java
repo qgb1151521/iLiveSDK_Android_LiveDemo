@@ -12,6 +12,8 @@ public class UserInfo {
     private String password;
     private int room = 4321;
 
+    private String replayUrl;
+
     private static UserInfo instance;
 
     public static UserInfo getInstance() {
@@ -52,6 +54,14 @@ public class UserInfo {
 
     public void setRoom(int room) {
         this.room = room;
+    }
+
+    public String getReplayUrl() {
+        return replayUrl;
+    }
+
+    public void setReplayUrl(String replayUrl) {
+        this.replayUrl = replayUrl;
     }
 
     public void writeToCache(Context context) {

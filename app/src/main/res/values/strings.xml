@@ -47,4 +47,5 @@
     <!-- 其它 -->
     <string name="str_tip_beauty">美颜</string>
     <string name="str_tip_white">美白</string>
+    <string name="str_menu_replay">回放</string>
 </resources>
