@@ -11,6 +11,7 @@ import com.tencent.ilivedemo.demos.DemoCross;
 import com.tencent.ilivedemo.demos.DemoGuest;
 import com.tencent.ilivedemo.demos.DemoHost;
 import com.tencent.ilivedemo.demos.DemoLiveGuest;
+import com.tencent.ilivedemo.demos.DemoReplayList;
 
 /**
  * 示例菜单
@@ -41,6 +42,9 @@ public class MenuActivity extends Activity implements View.OnClickListener{
                 break;
             case R.id.lmv_beauty:
                 enterDemo(DemoBtu.class);
+                break;
+            case R.id.lmv_replay:
+                enterDemo(DemoReplayList.class);
                 break;
         }
     }
