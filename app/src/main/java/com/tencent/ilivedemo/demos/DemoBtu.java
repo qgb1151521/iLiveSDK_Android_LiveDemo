@@ -102,7 +102,7 @@ public class DemoBtu extends Activity implements View.OnClickListener, ILVLiveCo
                 ILiveRoomManager.getInstance().enableCamera(ILiveRoomManager.getInstance().getCurCameraId(),
                         isCameraOn);
                 ((ImageView) findViewById(R.id.iv_camera)).setImageResource(
-                        isMicOn ? R.mipmap.ic_camera_off : R.mipmap.ic_camera_on);
+                        isCameraOn ? R.mipmap.ic_camera_off : R.mipmap.ic_camera_on);
                 break;
             case R.id.iv_switch:
                 ILiveRoomManager.getInstance().switchCamera(1 - ILiveRoomManager.getInstance().getCurCameraId());

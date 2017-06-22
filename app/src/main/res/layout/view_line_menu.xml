@@ -7,7 +7,7 @@
     android:layout_height="wrap_content" >
     <ImageView
         android:id="@+id/lm_icon"
-        android:background="@mipmap/ic_ilvb"
+        android:src="@mipmap/ic_ilvb"
         android:layout_margin="15dp"
         android:layout_width="35dp"
         android:layout_height="35dp" />

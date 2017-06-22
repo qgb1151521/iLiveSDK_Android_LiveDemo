@@ -44,7 +44,7 @@
 
     <com.tencent.ilivedemo.view.LineMenuView
         android:id="@+id/lmv_live_guest"
-        lmvattr:icon = "@mipmap/ic_play"
+        lmvattr:icon = "@mipmap/ic_liveguest"
         lmvattr:title = "@string/str_menu_live_guest"
         android:clickable="true"
         android:onClick="onClick"
@@ -53,7 +53,7 @@
 
     <com.tencent.ilivedemo.view.LineMenuView
         android:id="@+id/lmv_cross"
-        lmvattr:icon = "@mipmap/ic_ilvb"
+        lmvattr:icon = "@mipmap/ic_cross"
         lmvattr:title = "@string/str_menu_cross"
         android:clickable="true"
         android:onClick="onClick"

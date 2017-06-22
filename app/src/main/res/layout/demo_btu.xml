@@ -28,7 +28,7 @@
             android:gravity="center"
             android:textSize="23dp"
             android:textColor="@color/colorWhite"
-            android:text="@string/str_btn_cross"
+            android:text="@string/str_menu_beauty"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
     </LinearLayout>
@@ -66,7 +66,7 @@
     <!-- 控制栏 -->
     <LinearLayout
         android:id="@+id/ll_controller"
-        android:visibility="visible"
+        android:visibility="invisible"
         android:orientation="vertical"
         android:layout_alignParentBottom="true"
         android:layout_marginBottom="20dp"

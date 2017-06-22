@@ -47,7 +47,7 @@ public class LineMenuView extends LinearLayout {
 
     // 设置 Icon
     public void setIcon(int res){
-        ivIcon.setBackgroundResource(res);
+        ivIcon.setImageResource(res);
     }
 
     // 设置标题
