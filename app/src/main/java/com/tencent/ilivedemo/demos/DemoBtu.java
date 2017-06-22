@@ -62,7 +62,7 @@ public class DemoBtu extends Activity implements View.OnClickListener, ILVLiveCo
 
         arvRoot = (AVRootView) findViewById(R.id.arv_root);
         etRoom = (DemoEditText) findViewById(R.id.et_room);
-        etRoom.setText("" + UserInfo.getInstance().getRoom());
+//        etRoom.setText("" + UserInfo.getInstance().getRoom());
         tvMsg = (TextView) findViewById(R.id.tv_msg);
         llBeautyControl = (LinearLayout) findViewById(R.id.ll_btu_control);
         ((SeekBar) findViewById(R.id.sb_beauty)).setOnSeekBarChangeListener(this);
@@ -121,6 +121,9 @@ public class DemoBtu extends Activity implements View.OnClickListener, ILVLiveCo
                     llBeautyControl.setVisibility(View.INVISIBLE);
                 else
                     llBeautyControl.setVisibility(View.VISIBLE);
+                break;
+            case R.id.iv_return:
+                finish();
                 break;
         }
     }

@@ -56,7 +56,7 @@ public class DemoCross extends Activity implements View.OnClickListener, ILVLive
 
         arvRoot = (AVRootView)findViewById(R.id.arv_root);
         etRoom = (DemoEditText)findViewById(R.id.et_room);
-        etRoom.setText(""+UserInfo.getInstance().getRoom());
+//        etRoom.setText(""+UserInfo.getInstance().getRoom());
         tvMsg = (TextView)findViewById(R.id.tv_msg);
 
         etDstRoom = (DemoEditText)findViewById(R.id.et_dst_room);
@@ -111,6 +111,9 @@ public class DemoCross extends Activity implements View.OnClickListener, ILVLive
                 ILiveRoomManager.getInstance().enableMic(isMicOn);
                 ((ImageView)findViewById(R.id.iv_mic)).setImageResource(
                         isMicOn ? R.mipmap.ic_mic_off : R.mipmap.ic_mic_on);
+                break;
+            case R.id.iv_return:
+                finish();
                 break;
         }
     }

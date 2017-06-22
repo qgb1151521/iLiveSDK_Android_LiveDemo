@@ -46,7 +46,7 @@ public class DemoGuest extends Activity implements View.OnClickListener, ILVLive
 
         arvRoot = (AVRootView)findViewById(R.id.arv_root);
         etRoom = (DemoEditText)findViewById(R.id.et_room);
-        etRoom.setText(""+UserInfo.getInstance().getRoom());
+//        etRoom.setText(""+UserInfo.getInstance().getRoom());
         etMsg = (DemoEditText)findViewById(R.id.et_msg);
         tvMsg = (TextView)findViewById(R.id.tv_msg);
 
@@ -81,6 +81,9 @@ public class DemoGuest extends Activity implements View.OnClickListener, ILVLive
                 break;
             case R.id.tv_send:
                 sendMsg();
+                break;
+            case R.id.iv_return:
+                finish();
                 break;
         }
     }
