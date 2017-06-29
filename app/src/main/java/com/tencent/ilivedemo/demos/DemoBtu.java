@@ -5,8 +5,10 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.hardware.Camera;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.annotation.RequiresApi;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
@@ -23,6 +25,7 @@ import com.tencent.ilivedemo.model.MessageObservable;
 import com.tencent.ilivedemo.model.UserInfo;
 import com.tencent.ilivedemo.uiutils.DlgMgr;
 import com.tencent.ilivedemo.view.DemoEditText;
+import com.tencent.ilivefilter.TILFilter;
 import com.tencent.ilivesdk.ILiveCallBack;
 import com.tencent.ilivesdk.ILiveConstants;
 import com.tencent.ilivesdk.ILiveSDK;
@@ -45,7 +48,11 @@ public class DemoBtu extends Activity implements View.OnClickListener, ILVLiveCo
     private DemoEditText etRoom;
     private TextView tvMsg;
     private AVRootView arvRoot;
+    private SeekBar sbBeauty, sbWhite;
     private LinearLayout llBeautyControl;
+
+    private boolean bAvsdkBeauty = true;
+    private TILFilter mUDFilter;    // 美颜处理器
 
     private boolean isCameraOn = true;
     private boolean isMicOn = true;
@@ -65,11 +72,16 @@ public class DemoBtu extends Activity implements View.OnClickListener, ILVLiveCo
 //        etRoom.setText("" + UserInfo.getInstance().getRoom());
         tvMsg = (TextView) findViewById(R.id.tv_msg);
         llBeautyControl = (LinearLayout) findViewById(R.id.ll_btu_control);
-        ((SeekBar) findViewById(R.id.sb_beauty)).setOnSeekBarChangeListener(this);
-        ((SeekBar) findViewById(R.id.sb_white)).setOnSeekBarChangeListener(this);
+
+        sbBeauty = (SeekBar) findViewById(R.id.sb_beauty);
+        sbWhite = (SeekBar)findViewById(R.id.sb_white);
+        sbBeauty.setOnSeekBarChangeListener(this);
+        sbWhite.setOnSeekBarChangeListener(this);
 
         ILVLiveManager.getInstance().setAvVideoView(arvRoot);
         MessageObservable.getInstance().addObserver(this);
+
+        initILiveBeauty();
     }
 
     @Override
@@ -89,6 +101,12 @@ public class DemoBtu extends Activity implements View.OnClickListener, ILVLiveCo
         super.onDestroy();
         MessageObservable.getInstance().deleteObserver(this);
         ILVLiveManager.getInstance().onDestory();
+
+        if (null != mUDFilter) {
+            mUDFilter.setFilter(-1);
+            mUDFilter.destroyFilter();
+            mUDFilter = null;
+        }
     }
 
     @Override
@@ -122,6 +140,9 @@ public class DemoBtu extends Activity implements View.OnClickListener, ILVLiveCo
                 else
                     llBeautyControl.setVisibility(View.VISIBLE);
                 break;
+            case R.id.iv_switch_btu:
+                showBtuTypeDlg();
+                break;
             case R.id.iv_return:
                 finish();
                 break;
@@ -135,10 +156,16 @@ public class DemoBtu extends Activity implements View.OnClickListener, ILVLiveCo
         }
         switch (seekBar.getId()) {
             case R.id.sb_beauty:
-                ILiveRoomManager.getInstance().enableBeauty(progress);
+                if (bAvsdkBeauty)
+                    ILiveRoomManager.getInstance().enableBeauty(progress);
+                else
+                    mUDFilter.setBeauty(progress);
                 break;
             case R.id.sb_white:
-                ILiveRoomManager.getInstance().enableWhite(progress);
+                if (bAvsdkBeauty)
+                    ILiveRoomManager.getInstance().enableWhite(progress);
+                else
+                    mUDFilter.setWhite(progress);
                 break;
         }
     }
@@ -207,6 +234,7 @@ public class DemoBtu extends Activity implements View.OnClickListener, ILVLiveCo
         etRoom.setEnabled(false);
         findViewById(R.id.tv_create).setVisibility(View.INVISIBLE);
         findViewById(R.id.ll_controller).setVisibility(View.VISIBLE);
+        Log.v(TAG, "afterCreate->show control");
     }
 
     private void toggleFlash() {
@@ -287,5 +315,54 @@ public class DemoBtu extends Activity implements View.OnClickListener, ILVLiveCo
             }
         });
         DlgMgr.showAlertDlg(this, builder);
+    }
+
+    private void initILiveBeauty(){
+        if (null == mUDFilter){
+            Log.d(TAG, "FILTER->created");
+            mUDFilter = new TILFilter(this);
+            mUDFilter.setFilter(1);
+            mUDFilter.setBeauty(0);
+            mUDFilter.setWhite(0);
+        }
+    }
+
+    private void changeBeauty(){
+        if (null == ILiveSDK.getInstance().getAvVideoCtrl()){
+            return;
+        }
+        sbBeauty.setProgress(0);
+        sbWhite.setProgress(0);
+        mUDFilter.setBeauty(0);
+        mUDFilter.setWhite(0);
+        ILiveRoomManager.getInstance().enableBeauty(0);
+        ILiveRoomManager.getInstance().enableWhite(0);
+        if (!bAvsdkBeauty) {
+            ILiveSDK.getInstance().getAvVideoCtrl().setLocalVideoPreProcessCallback(new AVVideoCtrl.LocalVideoPreProcessCallback() {
+                @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR2)
+                @Override
+                public void onFrameReceive(AVVideoCtrl.VideoFrame var1) {
+                    mUDFilter.processData(var1.data, var1.dataLen, var1.width, var1.height, var1.srcType);
+                }
+            });
+        }else{
+            ILiveSDK.getInstance().getAvVideoCtrl().setLocalVideoPreProcessCallback(null);
+        }
+    }
+
+    private void showBtuTypeDlg(){
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContenxt())
+                .setTitle(R.string.str_title_btu_type)
+                .setSingleChoiceItems(R.array.str_btu_type, bAvsdkBeauty?0:1, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        if (bAvsdkBeauty != (0==i)){
+                            bAvsdkBeauty = (0==i);
+                            changeBeauty();
+                            Log.v(TAG, "showBtuTypeDlg->Change beauty: "+bAvsdkBeauty);
+                        }
+                    }
+                });
+        DlgMgr.showAlertDlg(getContenxt(), builder);
     }
 }

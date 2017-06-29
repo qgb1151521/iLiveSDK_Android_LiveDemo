@@ -35,6 +35,8 @@
     <string name="str_menu_cross">跨房连麦</string>
     <string name="str_menu_beauty">美颜</string>
     <string name="str_menu_live_guest">上麦</string>
+    <string name="str_menu_replay">回放</string>
+    <string name="str_menu_log">日志上报</string>
 
     <!-- 按钮 -->
     <string name="str_btn_regist">注册</string>
@@ -51,6 +53,12 @@
     <!-- 其它 -->
     <string name="str_tip_beauty">美颜</string>
     <string name="str_tip_white">美白</string>
-    <string name="str_menu_replay">回放</string>
-    <string name="str_menu_log">日志上报</string>
+    <string name="str_title_btu_type">美颜类型</string>
+    <string name="str_title_btu_avsdk">内置美颜</string>
+    <string name="str_title_btu_ilive">插件美颜</string>
+
+    <string-array name="str_btu_type">
+        <item>内置美颜</item>
+        <item>插件美颜</item>
+    </string-array>
 </resources>

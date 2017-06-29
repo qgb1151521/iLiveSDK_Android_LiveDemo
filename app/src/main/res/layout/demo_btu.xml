@@ -2,8 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorBack"
-        >
+    android:background="@color/colorBack" >
     
     <com.tencent.ilivesdk.view.AVRootView
         android:id="@+id/arv_root"
@@ -66,7 +65,7 @@
     <!-- 控制栏 -->
     <LinearLayout
         android:id="@+id/ll_controller"
-        android:visibility="invisible"
+        android:visibility="gone"
         android:orientation="vertical"
         android:layout_alignParentBottom="true"
         android:layout_marginBottom="20dp"
@@ -76,7 +75,7 @@
         <LinearLayout
             android:id="@+id/ll_btu_control"
             android:orientation="vertical"
-            android:visibility="invisible"
+            android:visibility="gone"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
             <LinearLayout
@@ -164,6 +163,16 @@
             <ImageView
                 android:id="@+id/iv_beauty"
                 android:src="@drawable/btn_beauty"
+                android:clickable="true"
+                android:onClick="onClick"
+                android:layout_width="@dimen/icon_width"
+                android:layout_height="@dimen/icon_height" />
+
+            <View android:layout_width="0dp"  android:layout_height="@dimen/icon_height" android:layout_weight="1" />
+
+            <ImageView
+                android:id="@+id/iv_switch_btu"
+                android:src="@mipmap/ic_switch_btu"
                 android:clickable="true"
                 android:onClick="onClick"
                 android:layout_width="@dimen/icon_width"
