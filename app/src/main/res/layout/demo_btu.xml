@@ -72,7 +72,7 @@
         android:layout_marginBottom="20dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
-        
+
         <LinearLayout
             android:id="@+id/ll_btu_control"
             android:orientation="vertical"

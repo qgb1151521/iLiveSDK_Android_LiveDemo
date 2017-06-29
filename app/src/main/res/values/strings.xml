@@ -24,6 +24,9 @@
     <string name="link_start_tips">已同意您的跨房连麦邀请，是否现在开始跨房连麦?</string>
     <string name="link_req_tips">邀请您跨房连麦，是否同意?</string>
     <string name="link_refuse_tips">已拒绝您的跨房连麦邀请!</string>
+    <string name="tip_not_support">Demo暂不支持该功能</string>
+    <string name="str_log_upload_hit">0-当天，1-昨天，2-前天，以此类推</string>
+    <string name="str_log_upload_tips">输入要上报的日志的日期</string>
 
 
     <!-- 标题 -->
@@ -43,9 +46,11 @@
     <string name="str_btn_cancel">取消</string>
     <string name="str_btn_refuse">拒绝</string>
     <string name="str_btn_agree">同意</string>
+    <string name="str_btn_log_upload">上报</string>
 
     <!-- 其它 -->
     <string name="str_tip_beauty">美颜</string>
     <string name="str_tip_white">美白</string>
     <string name="str_menu_replay">回放</string>
+    <string name="str_menu_log">日志上报</string>
 </resources>

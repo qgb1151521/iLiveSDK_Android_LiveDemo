@@ -31,12 +31,26 @@ import com.tencent.livesdk.ILVLiveManager;
 import com.tencent.livesdk.ILVLiveRoomOption;
 import com.tencent.livesdk.ILVText;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
+import java.util.concurrent.TimeUnit;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.MediaType;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
+
 /**
  * Created by xkazerzhang on 2017/5/24.
  */
 public class DemoCross extends Activity implements View.OnClickListener, ILVLiveConfig.ILVLiveMsgListener{
     private final String TAG = "DemoCross";
-    private DemoEditText etRoom, etDstRoom;
+    private DemoEditText etRoom, etDstRoom, etDstUser;
     private TextView tvMsg, tvCross;
     private AVRootView arvRoot;
 
@@ -44,6 +58,8 @@ public class DemoCross extends Activity implements View.OnClickListener, ILVLive
     private boolean isMicOn = true;
     private boolean isFlashOn = false;
     private boolean isCross = false;
+
+    private OkHttpClient okHttpClient;
 
     private String strMsg = "";
 
@@ -56,6 +72,8 @@ public class DemoCross extends Activity implements View.OnClickListener, ILVLive
 
         arvRoot = (AVRootView)findViewById(R.id.arv_root);
         etRoom = (DemoEditText)findViewById(R.id.et_room);
+        etDstRoom = (DemoEditText)findViewById(R.id.et_dst_room);
+        etDstUser = (DemoEditText)findViewById(R.id.et_dst_user);
 //        etRoom.setText(""+UserInfo.getInstance().getRoom());
         tvMsg = (TextView)findViewById(R.id.tv_msg);
 
@@ -64,6 +82,11 @@ public class DemoCross extends Activity implements View.OnClickListener, ILVLive
 
         ILVLiveManager.getInstance().setAvVideoView(arvRoot);
         MessageObservable.getInstance().addObserver(this);
+
+        okHttpClient = new OkHttpClient.Builder()
+                .connectTimeout(5, TimeUnit.SECONDS)
+                .readTimeout(5, TimeUnit.SECONDS)
+                .build();
     }
 
     @Override
@@ -92,6 +115,7 @@ public class DemoCross extends Activity implements View.OnClickListener, ILVLive
                 createRoom();
                 break;
             case R.id.tv_cross:
+                corssRoom();
                 break;
             case R.id.iv_camera:
                 isCameraOn = !isCameraOn;
@@ -219,5 +243,57 @@ public class DemoCross extends Activity implements View.OnClickListener, ILVLive
                 }
             });
         }
+    }
+
+    private Context getContext(){
+        return this;
+    }
+
+    private void corssRoom(){
+        int dstRoom = Integer.valueOf(etDstRoom.getText().toString());
+        String dstUser = etDstUser.getText().toString();
+
+        requestSign(dstRoom, dstUser);
+    }
+
+    private void requestSign(int dstRoomId, String dstUser){
+        String postBody = "";
+        try {
+            JSONObject jsonReq = new JSONObject();
+            jsonReq.put("mygroup", ILiveRoomManager.getInstance().getRoomId());
+            jsonReq.put("myid", ILiveLoginManager.getInstance().getMyUserId());
+            jsonReq.put("remotegroup", dstRoomId);
+            jsonReq.put("remotehost", dstUser);
+            postBody = jsonReq.toString();
+        }catch (JSONException e){
+        }
+        RequestBody requestBody = RequestBody.create(MediaType.parse("application/json; charset=utf-8"),
+                postBody);
+        Request request = new Request.Builder()
+                .url("https://sxb.qcloud.com/easy/encode")
+                .post(requestBody)
+                .build();
+        okHttpClient.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, final IOException e) {
+                ILiveSDK.getInstance().runOnMainThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        DlgMgr.showMsg(getContext(), "Request fail: "+e.toString());
+                    }
+                }, 0);
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                final String data = response.body().string();
+                ILiveSDK.getInstance().runOnMainThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        DlgMgr.showMsg(getContext(), "cross sig:: "+data);
+                    }
+                }, 0);
+            }
+        });
     }
 }

@@ -75,6 +75,12 @@
                 android:layout_height="wrap_content"
                 android:hint="请输入房间号 数字"
                 android:layout_weight="1"/>
+            <com.tencent.ilivedemo.view.DemoEditText
+                android:id="@+id/et_dst_user"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:hint="请输入对方主播id"
+                android:layout_weight="1"/>
             <TextView
                 android:id="@+id/tv_cross"
                 style="@style/DemoButton"

@@ -81,8 +81,13 @@ public class DemoReplayList extends Activity implements SwipeRefreshLayout.OnRef
                 .build();
         okHttpClient.newCall(request).enqueue(new Callback() {
             @Override
-            public void onFailure(Call call, IOException e) {
-                DlgMgr.showMsg(getContext(), "Request fail: "+e.toString());
+            public void onFailure(Call call, final IOException e) {
+                ILiveSDK.getInstance().runOnMainThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        DlgMgr.showMsg(getContext(), "Request fail: "+e.toString());
+                    }
+                }, 0);
             }
 
             @Override
