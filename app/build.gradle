@@ -56,7 +56,7 @@ android {
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
     compile 'com.android.support:appcompat-v7:24+'
-    compile 'com.tencent.ilivesdk:ilivesdk:1.5.2'
+    compile 'com.tencent.ilivesdk:ilivesdk:1.5.3.0.2'
     compile 'com.tencent.livesdk:livesdk:1.1.1'
     compile 'com.tencent.ilivefilter:ilivefilter:1.1.15'
     compile 'com.squareup.okhttp3:okhttp:3.2.0'

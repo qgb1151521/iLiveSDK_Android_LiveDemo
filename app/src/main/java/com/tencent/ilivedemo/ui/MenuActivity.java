@@ -17,6 +17,7 @@ import com.tencent.ilivedemo.demos.DemoCross;
 import com.tencent.ilivedemo.demos.DemoGuest;
 import com.tencent.ilivedemo.demos.DemoHost;
 import com.tencent.ilivedemo.demos.DemoLiveGuest;
+import com.tencent.ilivedemo.demos.DemoMix;
 import com.tencent.ilivedemo.demos.DemoReplayList;
 import com.tencent.ilivedemo.uiutils.DlgMgr;
 import com.tencent.ilivesdk.ILiveCallBack;
@@ -47,8 +48,7 @@ public class MenuActivity extends Activity implements View.OnClickListener{
                 enterDemo(DemoLiveGuest.class);
                 break;
             case R.id.lmv_cross:
-                DlgMgr.showMsg(this, R.string.tip_not_support);
-                //enterDemo(DemoCross.class);
+                enterDemo(DemoCross.class);
                 break;
             case R.id.lmv_beauty:
                 enterDemo(DemoBtu.class);
@@ -58,6 +58,9 @@ public class MenuActivity extends Activity implements View.OnClickListener{
                 break;
             case R.id.lmv_replay:
                 enterDemo(DemoReplayList.class);
+                break;
+            case R.id.lmv_mix:
+                enterDemo(DemoMix.class);
                 break;
         }
     }

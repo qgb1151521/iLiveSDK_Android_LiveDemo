@@ -1,6 +1,7 @@
 package com.tencent.ilivedemo;
 
 import android.app.Application;
+import android.os.StrictMode;
 
 import com.tencent.ilivedemo.model.MessageObservable;
 import com.tencent.ilivesdk.ILiveSDK;
@@ -14,9 +15,18 @@ import com.tencent.qalsdk.sdk.MsfSdkUtils;
 public class DemoApp extends Application {
     @Override
     public void onCreate() {
+        StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy.Builder()
+                .detectDiskReads()
+                .detectDiskWrites()
+                .detectNetwork()
+                .penaltyLog()
+                .build());
+        StrictMode.setVmPolicy(new StrictMode.VmPolicy.Builder().detectAll()
+                .penaltyLog()
+                .build());
         super.onCreate();
 
-        if(MsfSdkUtils.isMainProcess(this)){
+        if(MsfSdkUtils.isMainProcess(this)){    // 仅在主线程初始化
             // 初始化LiveSDK
             ILiveSDK.getInstance().initSdk(this, 1400028096, 11851);
             ILVLiveManager.getInstance().init(new ILVLiveConfig()

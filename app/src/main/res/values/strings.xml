@@ -37,6 +37,7 @@
     <string name="str_menu_live_guest">上麦</string>
     <string name="str_menu_replay">回放</string>
     <string name="str_menu_log">日志上报</string>
+    <string name="str_menu_mix">混流</string>
 
     <!-- 按钮 -->
     <string name="str_btn_regist">注册</string>
@@ -56,6 +57,7 @@
     <string name="str_title_btu_type">美颜类型</string>
     <string name="str_title_btu_avsdk">内置美颜</string>
     <string name="str_title_btu_ilive">插件美颜</string>
+    <string name="str_template">%d模板</string>
 
     <string-array name="str_btu_type">
         <item>内置美颜</item>

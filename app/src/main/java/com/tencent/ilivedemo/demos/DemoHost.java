@@ -63,6 +63,14 @@ public class DemoHost extends Activity implements View.OnClickListener, ILVLiveC
 
         ILVLiveManager.getInstance().setAvVideoView(arvRoot);
         MessageObservable.getInstance().addObserver(this);
+
+        // 打开摄像头预览
+        arvRoot.setSubCreatedListener(new AVRootView.onSubViewCreatedListener() {
+            @Override
+            public void onSubViewCreated() {
+                ILiveRoomManager.getInstance().enableCamera(ILiveConstants.FRONT_CAMERA, true);
+            }
+        });
     }
 
     @Override
@@ -80,6 +88,9 @@ public class DemoHost extends Activity implements View.OnClickListener, ILVLiveC
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        if (ILiveConstants.NONE_CAMERA != ILiveRoomManager.getInstance().getActiveCameraId()){
+            ILiveRoomManager.getInstance().enableCamera(ILiveRoomManager.getInstance().getActiveCameraId(), false);
+        }
         MessageObservable.getInstance().deleteObserver(this);
         ILVLiveManager.getInstance().onDestory();
     }
@@ -147,6 +158,7 @@ public class DemoHost extends Activity implements View.OnClickListener, ILVLiveC
     // 加入房间
     private void createRoom(){
         ILVLiveRoomOption option = new ILVLiveRoomOption(ILiveLoginManager.getInstance().getMyUserId())
+                .autoCamera(false)
                 .controlRole(Constants.ROLE_MASTER)
                 .autoFocus(true);
         ILVLiveManager.getInstance().createRoom(Integer.valueOf(etRoom.getText().toString()),

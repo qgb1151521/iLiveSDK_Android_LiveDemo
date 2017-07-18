@@ -23,6 +23,7 @@
         <activity android:name=".demos.DemoBtu" android:screenOrientation="portrait" />
         <activity android:name=".demos.DemoReplayList" android:screenOrientation="portrait" />
         <activity android:name=".demos.DemoReplay" android:screenOrientation="portrait" />
+        <activity android:name=".demos.DemoMix" android:screenOrientation="portrait" />
     </application>
 
 </manifest>

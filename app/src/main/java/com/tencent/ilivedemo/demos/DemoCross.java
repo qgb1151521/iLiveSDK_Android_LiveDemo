@@ -117,6 +117,9 @@ public class DemoCross extends Activity implements View.OnClickListener, ILVLive
             case R.id.tv_cross:
                 corssRoom();
                 break;
+            case R.id.tv_cancel_cross:
+                cancelCross();
+                break;
             case R.id.iv_camera:
                 isCameraOn = !isCameraOn;
                 ILiveRoomManager.getInstance().enableCamera(ILiveRoomManager.getInstance().getCurCameraId(),
@@ -256,7 +259,20 @@ public class DemoCross extends Activity implements View.OnClickListener, ILVLive
         requestSign(dstRoom, dstUser);
     }
 
-    private void requestSign(int dstRoomId, String dstUser){
+    private void cancelCross(){
+        ILVLiveManager.getInstance().unlinkRoom(new ILiveCallBack() {
+            @Override
+            public void onSuccess(Object data) {
+            }
+
+            @Override
+            public void onError(String module, int errCode, String errMsg) {
+                DlgMgr.showMsg(getContext(), "linkRoom->Failed: "+module+"|"+errCode+"|"+errMsg);
+            }
+        });
+    }
+
+    private void requestSign(final int dstRoomId, final String dstUser){
         String postBody = "";
         try {
             JSONObject jsonReq = new JSONObject();
@@ -290,7 +306,17 @@ public class DemoCross extends Activity implements View.OnClickListener, ILVLive
                 ILiveSDK.getInstance().runOnMainThread(new Runnable() {
                     @Override
                     public void run() {
-                        DlgMgr.showMsg(getContext(), "cross sig:: "+data);
+                        ILVLiveManager.getInstance().linkRoom(dstRoomId, dstUser, data, new ILiveCallBack() {
+                            @Override
+                            public void onSuccess(Object data) {
+                            }
+
+                            @Override
+                            public void onError(String module, int errCode, String errMsg) {
+                                DlgMgr.showMsg(getContext(), "linkRoom->Failed: "+module+"|"+errCode+"|"+errMsg);
+                            }
+                        });
+
                     }
                 }, 0);
             }
