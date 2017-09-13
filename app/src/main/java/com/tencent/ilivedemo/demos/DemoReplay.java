@@ -10,6 +10,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.tencent.ilivedemo.R;
+import com.tencent.ilivedemo.model.StatusObservable;
 import com.tencent.ilivedemo.model.UserInfo;
 import com.tencent.rtmp.ITXLivePlayListener;
 import com.tencent.rtmp.TXLiveConstants;
@@ -120,6 +121,7 @@ public class DemoReplay extends Activity implements ITXLivePlayListener {
             public void onStopTrackingTouch(SeekBar seekBar) {
                 if ( mTxlpPlayer != null) {
                     mTxlpPlayer.seek(seekBar.getProgress());
+                    mTxlpPlayer.resume();
                 }
             }
         });

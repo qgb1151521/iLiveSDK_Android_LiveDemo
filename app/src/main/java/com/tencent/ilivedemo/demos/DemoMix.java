@@ -1,7 +1,11 @@
 package com.tencent.ilivedemo.demos;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
@@ -18,7 +22,9 @@ import com.tencent.TIMUserProfile;
 import com.tencent.ilivedemo.R;
 import com.tencent.ilivedemo.model.Constants;
 import com.tencent.ilivedemo.model.MessageObservable;
+import com.tencent.ilivedemo.model.StatusObservable;
 import com.tencent.ilivedemo.model.UserInfo;
+import com.tencent.ilivedemo.uiutils.DemoFunc;
 import com.tencent.ilivedemo.uiutils.DlgMgr;
 import com.tencent.ilivedemo.view.DemoEditText;
 import com.tencent.ilivesdk.ILiveCallBack;
@@ -26,7 +32,6 @@ import com.tencent.ilivesdk.ILiveConstants;
 import com.tencent.ilivesdk.ILiveFunc;
 import com.tencent.ilivesdk.ILiveMemStatusLisenter;
 import com.tencent.ilivesdk.ILiveSDK;
-import com.tencent.ilivesdk.core.ILiveLog;
 import com.tencent.ilivesdk.core.ILiveLoginManager;
 import com.tencent.ilivesdk.core.ILiveRoomManager;
 import com.tencent.ilivesdk.view.AVRootView;
@@ -61,7 +66,8 @@ import okhttp3.Response;
 /**
  * Created by xkazerzhang on 2017/7/11.
  */
-public class DemoMix extends Activity implements View.OnClickListener, ILVLiveConfig.ILVLiveMsgListener, ILiveMemStatusLisenter, ITXLivePlayListener {
+public class DemoMix extends Activity implements View.OnClickListener, ILVLiveConfig.ILVLiveMsgListener,
+        ILiveMemStatusLisenter, ITXLivePlayListener, ILiveLoginManager.TILVBStatusListener{
     private final String TAG = "DemoMix";
     private static final int MSG_RESUME_PLAY = 0x101;
     private AVRootView avRootView;
@@ -77,6 +83,7 @@ public class DemoMix extends Activity implements View.OnClickListener, ILVLiveCo
     private ArrayList<String> renderList = new ArrayList<>();
     private Button btnArr[] = new Button[4];
     private int curTemplateId = -1;
+    private int iMaxDelay = 5000;
 
     private boolean bFirstPlay = true;
 
@@ -120,9 +127,7 @@ public class DemoMix extends Activity implements View.OnClickListener, ILVLiveCo
 
         ILVLiveManager.getInstance().setAvVideoView(avRootView);
         MessageObservable.getInstance().addObserver(this);
-
-        Bitmap bitmap = BitmapFactory.decodeResource(getContenxt().getResources(), R.mipmap.background);
-        avRootView.setBackground(bitmap);
+        StatusObservable.getInstance().addObserver(this);
 
         avRootView.setSubCreatedListener(new AVRootView.onSubViewCreatedListener() {
             @Override
@@ -186,6 +191,7 @@ public class DemoMix extends Activity implements View.OnClickListener, ILVLiveCo
     protected void onDestroy() {
         super.onDestroy();
         MessageObservable.getInstance().deleteObserver(this);
+        StatusObservable.getInstance().deleteObserver(this);
         ILVLiveManager.getInstance().onDestory();
     }
 
@@ -197,6 +203,12 @@ public class DemoMix extends Activity implements View.OnClickListener, ILVLiveCo
                 break;
             case R.id.iv_return:
                 finish();
+                break;
+            case R.id.btn_copy:
+                ClipboardManager cmb = (ClipboardManager) getApplicationContext().getSystemService(Context.CLIPBOARD_SERVICE);
+                ClipData clipData = ClipData.newPlainText("text", tvMixAddr.getText().toString());
+                cmb.setPrimaryClip(clipData);
+                DlgMgr.showMsg(this, "Copy Success");
                 break;
             case R.id.btn_template1:
             case R.id.btn_template2:
@@ -210,7 +222,7 @@ public class DemoMix extends Activity implements View.OnClickListener, ILVLiveCo
 
     @Override
     public void onNewTextMsg(ILVText text, String SenderId, TIMUserProfile userProfile) {
-        addMessage(SenderId, text.getText());
+        addMessage(SenderId, DemoFunc.getLimitString(text.getText(), Constants.MAX_SIZE));
     }
 
     @Override
@@ -235,7 +247,7 @@ public class DemoMix extends Activity implements View.OnClickListener, ILVLiveCo
                     if (!renderList.contains(stream))
                         renderList.add(stream);
                 }
-                cancelMixStream(true, 2000);
+                cancelMixStream(true, iMaxDelay);
                 break;
             case ILiveConstants.TYPE_MEMBER_CHANGE_HAS_SCREEN_VIDEO:
                 for (String id : updateList) {
@@ -243,21 +255,21 @@ public class DemoMix extends Activity implements View.OnClickListener, ILVLiveCo
                     if (!renderList.contains(stream))
                         renderList.add(stream);
                 }
-                cancelMixStream(true, 2000);
+                cancelMixStream(true, iMaxDelay);
                 break;
             case ILiveConstants.TYPE_MEMBER_CHANGE_NO_CAMERA_VIDEO:
                 for (String id : updateList) {
                     String stream = UserInfo.getInstance().getRoom() + "_" + id + "_main";
                     renderList.remove(stream);
                 }
-                cancelMixStream(true, 2000);
+                cancelMixStream(true, iMaxDelay);
                 break;
             case ILiveConstants.TYPE_MEMBER_CHANGE_NO_SCREEN_VIDEO:
                 for (String id : updateList) {
                     String stream = UserInfo.getInstance().getRoom() + "_" + id + "_aux";
                     renderList.remove(stream);
                 }
-                cancelMixStream(true, 2000);
+                cancelMixStream(true, iMaxDelay);
                 break;
         }
         return false;
@@ -285,6 +297,11 @@ public class DemoMix extends Activity implements View.OnClickListener, ILVLiveCo
 
     }
 
+    @Override
+    public void onForceOffline(int error, String message) {
+        finish();
+    }
+
     private Context getContenxt(){
         return DemoMix.this;
     }
@@ -295,13 +312,62 @@ public class DemoMix extends Activity implements View.OnClickListener, ILVLiveCo
         tvMsg.setText(strMsg);
     }
 
+    private void joinRoom(){
+        final int roomId = DemoFunc.getIntValue(etRoom.getText().toString(), -1);
+        if (-1 == roomId){
+            DlgMgr.showMsg(getContenxt(), getString(R.string.str_tip_num_error));
+            return;
+        }
+        ILVLiveRoomOption option = new ILVLiveRoomOption("")
+                .videoMode(ILiveConstants.VIDEOMODE_NORMAL)
+                .controlRole(Constants.ROLE_LIVEGUEST)
+                .autoFocus(true);
+        ILVLiveManager.getInstance().joinRoom(roomId, option, new ILiveCallBack() {
+            @Override
+            public void onSuccess(Object data) {
+                afterCreate();
+            }
+
+            @Override
+            public void onError(String module, int errCode, String errMsg) {
+                DlgMgr.showMsg(getContenxt(), "create failed:"+module+"|"+errCode+"|"+errMsg);
+            }
+        });
+    }
+
+    private void showChoiceDlg(){
+        AlertDialog.Builder builder = new AlertDialog.Builder(this)
+                .setTitle("提示")
+                .setMessage("房间已存在，是否加入房间？")
+                .setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        dialogInterface.dismiss();
+                    }
+                })
+                .setPositiveButton("确定", new DialogInterface.OnClickListener(){
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        joinRoom();
+                        dialogInterface.dismiss();
+                    }
+                });
+        DlgMgr.showAlertDlg(this, builder);
+    }
+
     // 加入房间
     private void createRoom(){
+        int roomId = DemoFunc.getIntValue(etRoom.getText().toString(), -1);
+        if (-1 == roomId){
+            DlgMgr.showMsg(getContenxt(), getString(R.string.str_tip_num_error));
+            return;
+        }
         ILVLiveRoomOption option = new ILVLiveRoomOption(ILiveLoginManager.getInstance().getMyUserId())
                 .setRoomMemberStatusLisenter(this)
+                .videoMode(ILiveConstants.VIDEOMODE_NORMAL)
                 .controlRole(Constants.ROLE_MASTER)
                 .autoFocus(true);
-        UserInfo.getInstance().setRoom(Integer.valueOf(etRoom.getText().toString()));
+        UserInfo.getInstance().setRoom(roomId);
         ILVLiveManager.getInstance().createRoom(UserInfo.getInstance().getRoom(),
                 option, new ILiveCallBack() {
                     @Override
@@ -311,7 +377,12 @@ public class DemoMix extends Activity implements View.OnClickListener, ILVLiveCo
 
                     @Override
                     public void onError(String module, int errCode, String errMsg) {
-                        DlgMgr.showMsg(getContenxt(), "create failed:"+module+"|"+errCode+"|"+errMsg);
+                        if (module.equals(ILiveConstants.Module_IMSDK) && 10021 == errCode){
+                            // 被占用，改加入
+                            showChoiceDlg();
+                        }else {
+                            DlgMgr.showMsg(getContenxt(), "create failed:" + module + "|" + errCode + "|" + errMsg);
+                        }
                     }
                 });
     }

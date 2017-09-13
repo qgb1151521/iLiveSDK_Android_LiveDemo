@@ -44,14 +44,14 @@ public class DlgMgr {
     }
 
     // 显示提示信息
-    public static void showMsg(Context context, String msg){
+    public static AlertDialog showMsg(Context context, String msg){
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         builder.setTitle(R.string.msg_title)
                 .setMessage(msg);
-        showAlertDlg(context, builder);
+        return showAlertDlg(context, builder);
     }
 
-    public static void showMsg(Context context, int res){
-        showMsg(context, context.getString(res));
+    public static AlertDialog showMsg(Context context, int res){
+        return showMsg(context, context.getString(res));
     }
 }

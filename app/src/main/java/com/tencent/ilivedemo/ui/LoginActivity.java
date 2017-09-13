@@ -10,6 +10,7 @@ import android.view.View;
 import android.widget.EditText;
 
 import com.tencent.ilivedemo.R;
+import com.tencent.ilivedemo.model.StatusObservable;
 import com.tencent.ilivedemo.model.UserInfo;
 import com.tencent.ilivedemo.uiutils.DlgMgr;
 import com.tencent.ilivedemo.view.DemoEditText;
@@ -25,6 +26,13 @@ public class LoginActivity extends Activity implements View.OnClickListener {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        if (StatusObservable.getInstance().getObserverCount() > 0){
+            // 避免重复打开
+            finish();
+            return;
+        }
+
         setContentView(R.layout.activity_login);
 
         etAccount = (DemoEditText) findViewById(R.id.et_account);
@@ -99,6 +107,7 @@ public class LoginActivity extends Activity implements View.OnClickListener {
 
     // 登录成功
     private void afterLogin(){
+        ILiveLoginManager.getInstance().setUserStatusListener(StatusObservable.getInstance());
         UserInfo.getInstance().setAccount(etAccount.getText().toString());
         UserInfo.getInstance().setPassword(etPwd.getText().toString());
         UserInfo.getInstance().writeToCache(getApplicationContext());

@@ -2,10 +2,13 @@ package com.tencent.ilivedemo.ui;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.Dialog;
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
@@ -19,20 +22,30 @@ import com.tencent.ilivedemo.demos.DemoHost;
 import com.tencent.ilivedemo.demos.DemoLiveGuest;
 import com.tencent.ilivedemo.demos.DemoMix;
 import com.tencent.ilivedemo.demos.DemoReplayList;
+import com.tencent.ilivedemo.model.StatusObservable;
+import com.tencent.ilivedemo.uiutils.DemoFunc;
 import com.tencent.ilivedemo.uiutils.DlgMgr;
 import com.tencent.ilivesdk.ILiveCallBack;
 import com.tencent.ilivesdk.ILiveSDK;
+import com.tencent.ilivesdk.core.ILiveLoginManager;
 
 /**
  * 示例菜单
  */
-public class MenuActivity extends Activity implements View.OnClickListener{
+public class MenuActivity extends Activity implements View.OnClickListener, ILiveLoginManager.TILVBStatusListener{
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_mainmenu);
+        StatusObservable.getInstance().addObserver(this);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        StatusObservable.getInstance().deleteObserver(this);
     }
 
     @Override
@@ -65,6 +78,16 @@ public class MenuActivity extends Activity implements View.OnClickListener{
         }
     }
 
+    @Override
+    public void onForceOffline(int error, String message) {
+        DlgMgr.showMsg(getContext(), getString(R.string.str_tips_offline)).setOnCancelListener(new DialogInterface.OnCancelListener() {
+            @Override
+            public void onCancel(DialogInterface dialogInterface) {
+                enterDemo(LoginActivity.class);
+                finish();
+            }
+        });
+    }
 
     private void enterDemo(Class clsActivity){
         startActivity(new Intent(this, clsActivity));
@@ -91,21 +114,40 @@ public class MenuActivity extends Activity implements View.OnClickListener{
             @Override
             public void onClick(View view) {
                 int date = 0;
-                try{
-                    date = Integer.valueOf(etDate.getText().toString());
-                }catch (NumberFormatException e){
-                }
-                ILiveSDK.getInstance().uploadLog("report log", date,  new ILiveCallBack(){
-                    @Override
-                    public void onSuccess(Object data) {
-                        Toast.makeText(getContext(), "Log report succ!", Toast.LENGTH_SHORT).show();
-                    }
+                if (!TextUtils.isEmpty(etDate.getText().toString()))
+                    date = DemoFunc.getIntValue(etDate.getText().toString(), -1);
+                if (date > 7){
+                    DlgMgr.showMsg(getContext(), getString(R.string.str_tip_log_limit));
+                }else {
+                    ILiveSDK.getInstance().uploadLog("report log", date, new ILiveCallBack<String>() {
+                        @Override
+                        public void onSuccess(final String logKey) {
+                            AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                            builder.setTitle(R.string.msg_title);
+                            builder.setMessage("Log report succ:"+logKey);
+                            builder.setNegativeButton("OK", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    dialogInterface.dismiss();
+                                }
+                            });
+                            builder.setPositiveButton("Copy", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    ClipboardManager cmb = (ClipboardManager) getApplicationContext().getSystemService(Context.CLIPBOARD_SERVICE);
+                                    ClipData clipData = ClipData.newPlainText("text", logKey);
+                                    cmb.setPrimaryClip(clipData);
+                                }
+                            });
+                            DlgMgr.showAlertDlg(getContext(), builder);
+                        }
 
-                    @Override
-                    public void onError(String module, int errCode, String errMsg) {
-                        Toast.makeText(getContext(), "failed:"+module+"|"+errCode+"|"+errMsg, Toast.LENGTH_SHORT).show();
-                    }
-                });
+                        @Override
+                        public void onError(String module, int errCode, String errMsg) {
+                            Toast.makeText(getContext(), "failed:" + module + "|" + errCode + "|" + errMsg, Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                }
                 dialog.dismiss();
             }
         });

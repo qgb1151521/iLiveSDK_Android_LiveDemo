@@ -10,6 +10,7 @@ import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.tencent.TIMMessage;
@@ -18,7 +19,9 @@ import com.tencent.av.sdk.AVVideoCtrl;
 import com.tencent.ilivedemo.R;
 import com.tencent.ilivedemo.model.Constants;
 import com.tencent.ilivedemo.model.MessageObservable;
+import com.tencent.ilivedemo.model.StatusObservable;
 import com.tencent.ilivedemo.model.UserInfo;
+import com.tencent.ilivedemo.uiutils.DemoFunc;
 import com.tencent.ilivedemo.uiutils.DlgMgr;
 import com.tencent.ilivedemo.view.DemoEditText;
 import com.tencent.ilivesdk.ILiveCallBack;
@@ -37,10 +40,11 @@ import com.tencent.livesdk.ILVText;
 /**
  * Created by xkazerzhang on 2017/5/24.
  */
-public class DemoHost extends Activity implements View.OnClickListener, ILVLiveConfig.ILVLiveMsgListener{
+public class DemoHost extends Activity implements View.OnClickListener, ILVLiveConfig.ILVLiveMsgListener, ILiveLoginManager.TILVBStatusListener{
     private final String TAG = "DemoHost";
     private DemoEditText etRoom;
     private TextView tvMsg;
+    private ScrollView svScroll;
     private AVRootView arvRoot;
 
     private boolean isCameraOn = true;
@@ -60,10 +64,13 @@ public class DemoHost extends Activity implements View.OnClickListener, ILVLiveC
         etRoom = (DemoEditText)findViewById(R.id.et_room);
 //        etRoom.setText(""+UserInfo.getInstance().getRoom());
         tvMsg = (TextView)findViewById(R.id.tv_msg);
+        svScroll = (ScrollView)findViewById(R.id.sv_scroll);
 
         ILVLiveManager.getInstance().setAvVideoView(arvRoot);
         MessageObservable.getInstance().addObserver(this);
+        StatusObservable.getInstance().addObserver(this);
 
+        arvRoot.setAutoOrientation(false);
         // 打开摄像头预览
         arvRoot.setSubCreatedListener(new AVRootView.onSubViewCreatedListener() {
             @Override
@@ -92,6 +99,7 @@ public class DemoHost extends Activity implements View.OnClickListener, ILVLiveC
             ILiveRoomManager.getInstance().enableCamera(ILiveRoomManager.getInstance().getActiveCameraId(), false);
         }
         MessageObservable.getInstance().deleteObserver(this);
+        StatusObservable.getInstance().deleteObserver(this);
         ILVLiveManager.getInstance().onDestory();
     }
 
@@ -106,10 +114,15 @@ public class DemoHost extends Activity implements View.OnClickListener, ILVLiveC
                 ILiveRoomManager.getInstance().enableCamera(ILiveRoomManager.getInstance().getCurCameraId(),
                         isCameraOn);
                 ((ImageView)findViewById(R.id.iv_camera)).setImageResource(
-                        isCameraOn ? R.mipmap.ic_camera_off : R.mipmap.ic_camera_on);
+                        isCameraOn ? R.mipmap.ic_camera_on : R.mipmap.ic_camera_off);
                 break;
             case R.id.iv_switch:
-                ILiveRoomManager.getInstance().switchCamera(1-ILiveRoomManager.getInstance().getCurCameraId());
+                Log.v(TAG, "switch->cur: "+ILiveRoomManager.getInstance().getActiveCameraId()+"/"+ILiveRoomManager.getInstance().getCurCameraId());
+                if (ILiveConstants.NONE_CAMERA != ILiveRoomManager.getInstance().getActiveCameraId()) {
+                    ILiveRoomManager.getInstance().switchCamera(1 - ILiveRoomManager.getInstance().getActiveCameraId());
+                }else{
+                    ILiveRoomManager.getInstance().switchCamera(ILiveConstants.FRONT_CAMERA);
+                }
                 break;
             case R.id.iv_flash:
                 toggleFlash();
@@ -118,7 +131,7 @@ public class DemoHost extends Activity implements View.OnClickListener, ILVLiveC
                 isMicOn = !isMicOn;
                 ILiveRoomManager.getInstance().enableMic(isMicOn);
                 ((ImageView)findViewById(R.id.iv_mic)).setImageResource(
-                        isMicOn ? R.mipmap.ic_mic_off : R.mipmap.ic_mic_on);
+                        isMicOn ? R.mipmap.ic_mic_on : R.mipmap.ic_mic_off);
                 break;
             case R.id.iv_return:
                 finish();
@@ -128,7 +141,7 @@ public class DemoHost extends Activity implements View.OnClickListener, ILVLiveC
 
     @Override
     public void onNewTextMsg(ILVText text, String SenderId, TIMUserProfile userProfile) {
-        addMessage(SenderId, text.getText());
+        addMessage(SenderId, DemoFunc.getLimitString(text.getText(), Constants.MAX_SIZE));
     }
 
     @Override
@@ -145,6 +158,11 @@ public class DemoHost extends Activity implements View.OnClickListener, ILVLiveC
 
     }
 
+    @Override
+    public void onForceOffline(int error, String message) {
+        finish();
+    }
+
     private Context getContenxt(){
         return DemoHost.this;
     }
@@ -153,15 +171,66 @@ public class DemoHost extends Activity implements View.OnClickListener, ILVLiveC
     private void addMessage(String sender, String msg){
         strMsg += "["+sender+"]  "+msg+"\n";
         tvMsg.setText(strMsg);
+        svScroll.fullScroll(View.FOCUS_DOWN);
+    }
+
+    private void joinRoom(){
+        final int roomId = DemoFunc.getIntValue(etRoom.getText().toString(), -1);
+        if (-1 == roomId){
+            DlgMgr.showMsg(getContenxt(), getString(R.string.str_tip_num_error));
+            return;
+        }
+        ILVLiveRoomOption option = new ILVLiveRoomOption("")
+                .autoCamera(ILiveConstants.NONE_CAMERA != ILiveRoomManager.getInstance().getActiveCameraId())
+                .videoMode(ILiveConstants.VIDEOMODE_NORMAL)
+                .controlRole(Constants.ROLE_LIVEGUEST)
+                .autoFocus(true);
+        ILVLiveManager.getInstance().joinRoom(roomId, option, new ILiveCallBack() {
+            @Override
+            public void onSuccess(Object data) {
+                afterCreate();
+            }
+
+            @Override
+            public void onError(String module, int errCode, String errMsg) {
+                DlgMgr.showMsg(getContenxt(), "create failed:"+module+"|"+errCode+"|"+errMsg);
+            }
+        });
+    }
+
+    private void showChoiceDlg(){
+        AlertDialog.Builder builder = new AlertDialog.Builder(this)
+                .setTitle("提示")
+                .setMessage("房间已存在，是否加入房间？")
+                .setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        dialogInterface.dismiss();
+                    }
+                })
+                .setPositiveButton("确定", new DialogInterface.OnClickListener(){
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        joinRoom();
+                        dialogInterface.dismiss();
+                    }
+                });
+        DlgMgr.showAlertDlg(this, builder);
     }
 
     // 加入房间
     private void createRoom(){
+        final int roomId = DemoFunc.getIntValue(etRoom.getText().toString(), -1);
+        if (-1 == roomId){
+            DlgMgr.showMsg(getContenxt(), getString(R.string.str_tip_num_error));
+            return;
+        }
         ILVLiveRoomOption option = new ILVLiveRoomOption(ILiveLoginManager.getInstance().getMyUserId())
-                .autoCamera(false)
+                .autoCamera(ILiveConstants.NONE_CAMERA != ILiveRoomManager.getInstance().getActiveCameraId())
+                .videoMode(ILiveConstants.VIDEOMODE_NORMAL)
                 .controlRole(Constants.ROLE_MASTER)
                 .autoFocus(true);
-        ILVLiveManager.getInstance().createRoom(Integer.valueOf(etRoom.getText().toString()),
+        ILVLiveManager.getInstance().createRoom(roomId,
                 option, new ILiveCallBack() {
                     @Override
                     public void onSuccess(Object data) {
@@ -170,7 +239,12 @@ public class DemoHost extends Activity implements View.OnClickListener, ILVLiveC
 
                     @Override
                     public void onError(String module, int errCode, String errMsg) {
-                        DlgMgr.showMsg(getContenxt(), "create failed:"+module+"|"+errCode+"|"+errMsg);
+                        if (module.equals(ILiveConstants.Module_IMSDK) && 10021 == errCode){
+                            // 被占用，改加入
+                            showChoiceDlg();
+                        }else {
+                            DlgMgr.showMsg(getContenxt(), "create failed:" + module + "|" + errCode + "|" + errMsg);
+                        }
                     }
                 });
     }
@@ -180,7 +254,9 @@ public class DemoHost extends Activity implements View.OnClickListener, ILVLiveC
         UserInfo.getInstance().writeToCache(this);
         etRoom.setEnabled(false);
         findViewById(R.id.tv_create).setVisibility(View.INVISIBLE);
-        findViewById(R.id.ll_controller).setVisibility(View.VISIBLE);
+        findViewById(R.id.iv_camera).setVisibility(View.VISIBLE);
+        findViewById(R.id.iv_flash).setVisibility(View.VISIBLE);
+        findViewById(R.id.iv_mic).setVisibility(View.VISIBLE);
     }
 
     private void toggleFlash(){

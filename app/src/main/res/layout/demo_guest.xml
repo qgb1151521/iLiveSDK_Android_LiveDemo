@@ -31,15 +31,30 @@
             android:layout_height="wrap_content" />
     </LinearLayout>
 
-    <TextView
-        android:id="@+id/tv_msg"
-        android:gravity="bottom"
+    <LinearLayout
+        android:orientation="vertical"
         android:layout_marginTop="80dp"
         android:layout_marginBottom="80dp"
         android:layout_marginLeft="20dp"
-        android:textColor="@color/colorWhite"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent">
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
+        <ScrollView
+            android:id="@+id/sv_scroll"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1">
+            <TextView
+                android:id="@+id/tv_msg"
+                android:gravity="bottom"
+                android:textColor="@color/colorWhite"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+        </ScrollView>
+    </LinearLayout>
 
 
     <LinearLayout
@@ -73,6 +88,7 @@
         <com.tencent.ilivedemo.view.DemoEditText
             android:id="@+id/et_msg"
             android:layout_width="0dp"
+            android:maxLength="48"
             android:layout_height="wrap_content"
             android:layout_weight="1" />
         <TextView

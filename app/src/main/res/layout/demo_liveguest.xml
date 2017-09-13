@@ -32,15 +32,30 @@
             android:layout_height="wrap_content" />
     </LinearLayout>
 
-    <TextView
-        android:id="@+id/tv_msg"
-        android:gravity="bottom"
+    <LinearLayout
+        android:orientation="vertical"
         android:layout_marginTop="80dp"
         android:layout_marginBottom="80dp"
         android:layout_marginLeft="20dp"
-        android:textColor="@color/colorWhite"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent">
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
+        <ScrollView
+            android:id="@+id/sv_scroll"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1">
+            <TextView
+                android:id="@+id/tv_msg"
+                android:gravity="bottom"
+                android:textColor="@color/colorWhite"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+        </ScrollView>
+    </LinearLayout>
 
     <LinearLayout
         android:layout_marginTop="50dp"
@@ -73,7 +88,7 @@
 
         <ImageView
             android:id="@+id/iv_camera"
-            android:src="@mipmap/ic_camera_off"
+            android:src="@mipmap/ic_camera_on"
             android:clickable="true"
             android:onClick="onClick"
             android:layout_width="@dimen/icon_width"
@@ -103,7 +118,7 @@
 
         <ImageView
             android:id="@+id/iv_mic"
-            android:src="@mipmap/ic_mic_off"
+            android:src="@mipmap/ic_mic_on"
             android:clickable="true"
             android:onClick="onClick"
             android:layout_width="@dimen/icon_width"

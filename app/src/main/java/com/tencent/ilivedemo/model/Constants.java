@@ -23,4 +23,6 @@ public class Constants {
     public static final String MIX_API_KEY = "45eeb9fc2e4e6f88b778e0bbd9de3737";
     // 固定地址
     public static final String MIX_SERVER = "http://fcgi.video.qcloud.com";
+
+    public static final int MAX_SIZE = 50;
 }

@@ -32,7 +32,7 @@ import okhttp3.Response;
 /**
  * Created by xkazerzhang on 2017/6/22.
  */
-public class DemoReplayList extends Activity implements SwipeRefreshLayout.OnRefreshListener {
+public class DemoReplayList extends Activity implements SwipeRefreshLayout.OnRefreshListener, View.OnClickListener {
     private ListView lvReplay;
     private SwipeRefreshLayout srlSwipe;
 
@@ -111,6 +111,15 @@ public class DemoReplayList extends Activity implements SwipeRefreshLayout.OnRef
                 }, 0);
             }
         });
+    }
+
+    @Override
+    public void onClick(View view) {
+        switch (view.getId()){
+            case R.id.iv_return:
+                finish();
+                break;
+        }
     }
 
     private Context getContext(){

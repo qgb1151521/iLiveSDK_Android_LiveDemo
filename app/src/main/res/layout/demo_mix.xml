@@ -26,6 +26,26 @@
             android:layout_height="wrap_content" />
     </LinearLayout>
 
+    <LinearLayout
+        android:layout_marginTop="20dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <com.tencent.ilivedemo.view.DemoEditText
+            android:id="@+id/et_room"
+            android:inputType="number"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:hint="请输入房间号 数字"
+            android:layout_weight="1"/>
+        <TextView
+            android:id="@+id/tv_create"
+            style="@style/DemoButton"
+            android:onClick="onClick"
+            android:text="@string/str_btn_create"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+
     <com.tencent.ilivesdk.view.AVRootView
         android:id="@+id/av_root_view"
         android:layout_width="match_parent"
@@ -62,28 +82,20 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1">
-        <TextView
-            android:id="@+id/tv_mix_addr"
-            android:gravity="right"
-            android:textColor="@color/colorWhite"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
         <LinearLayout
-            android:layout_marginTop="20dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
-            <com.tencent.ilivedemo.view.DemoEditText
-                android:id="@+id/et_room"
-                android:inputType="number"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:hint="请输入房间号 数字"
-                android:layout_weight="1"/>
             <TextView
-                android:id="@+id/tv_create"
-                style="@style/DemoButton"
+                android:id="@+id/tv_mix_addr"
+                android:gravity="left"
+                android:textColor="@color/colorWhite"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content" />
+            <Button
+                android:id="@+id/btn_copy"
+                android:text="@string/str_btn_copy"
                 android:onClick="onClick"
-                android:text="@string/str_btn_create"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
         </LinearLayout>
