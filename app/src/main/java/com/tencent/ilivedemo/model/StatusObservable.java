@@ -47,7 +47,6 @@ public class StatusObservable implements ILiveLoginManager.TILVBStatusListener {
 
     @Override
     public void onForceOffline(int error, String message) {
-        ILiveLog.di("DBG", "onForceOffline->", new ILiveLog.LogExts().put("error", error).put("message", message));
         // 拷贝链表
         LinkedList<ILiveLoginManager.TILVBStatusListener> tmpList = new LinkedList<>(listObservers);
         for (ILiveLoginManager.TILVBStatusListener listener : tmpList){

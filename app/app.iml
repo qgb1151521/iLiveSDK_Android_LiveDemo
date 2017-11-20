@@ -85,8 +85,8 @@
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/exploded-aar/com.android.support/support-v4/25.0.0/jars" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/exploded-aar/com.android.support/support-vector-drawable/25.0.0/jars" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/exploded-aar/com.tencent.ilivefilter/ilivefilter/1.1.15/jars" />
-      <excludeFolder url="file://$MODULE_DIR$/build/intermediates/exploded-aar/com.tencent.ilivesdk/ilivesdk/1.6.3.0.4/jars" />
-      <excludeFolder url="file://$MODULE_DIR$/build/intermediates/exploded-aar/com.tencent.livesdk/livesdk/1.1.4/jars" />
+      <excludeFolder url="file://$MODULE_DIR$/build/intermediates/exploded-aar/com.tencent.ilivesdk/ilivesdk/1.7.2/jars" />
+      <excludeFolder url="file://$MODULE_DIR$/build/intermediates/exploded-aar/com.tencent.livesdk/livesdk/1.1.2/jars" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/exploded-aar/com.tencent.rtmpsdk/rtmpsdk/1.0.8/jars" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/incremental" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/incremental-safeguard" />
@@ -107,7 +107,7 @@
     <orderEntry type="library" exported="" scope="TEST" name="multidex-instrumentation-1.0.1" level="project" />
     <orderEntry type="library" exported="" name="support-annotations-25.0.0" level="project" />
     <orderEntry type="library" exported="" name="okio-1.6.0" level="project" />
-    <orderEntry type="library" exported="" name="ilivesdk-1.6.3.0.4" level="project" />
+    <orderEntry type="library" exported="" name="ilivesdk-1.7.2" level="project" />
     <orderEntry type="library" exported="" name="support-v4-25.0.0" level="project" />
     <orderEntry type="library" exported="" name="support-media-compat-25.0.0" level="project" />
     <orderEntry type="library" exported="" name="support-compat-25.0.0" level="project" />
@@ -120,7 +120,7 @@
     <orderEntry type="library" exported="" name="support-vector-drawable-25.0.0" level="project" />
     <orderEntry type="library" exported="" name="support-core-utils-25.0.0" level="project" />
     <orderEntry type="library" exported="" name="ilivefilter-1.1.15" level="project" />
-    <orderEntry type="library" exported="" name="livesdk-1.1.4" level="project" />
     <orderEntry type="library" exported="" name="rtmpsdk-1.0.8" level="project" />
+    <orderEntry type="library" exported="" name="livesdk-1.1.2" level="project" />
   </component>
 </module>
