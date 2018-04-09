@@ -4,9 +4,12 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.ImageView;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
@@ -22,6 +25,7 @@ import com.tencent.ilivedemo.model.Constants;
 import com.tencent.ilivedemo.model.MessageObservable;
 import com.tencent.ilivedemo.model.StatusObservable;
 import com.tencent.ilivedemo.model.UserInfo;
+import com.tencent.ilivedemo.ui.RadioGroupDialog;
 import com.tencent.ilivedemo.uiutils.DemoFunc;
 import com.tencent.ilivedemo.uiutils.DlgMgr;
 import com.tencent.ilivedemo.view.DemoEditText;
@@ -29,12 +33,16 @@ import com.tencent.ilivesdk.ILiveCallBack;
 import com.tencent.ilivesdk.ILiveConstants;
 import com.tencent.ilivesdk.core.ILiveLoginManager;
 import com.tencent.ilivesdk.core.ILiveRoomManager;
+import com.tencent.ilivesdk.tools.quality.ILiveQualityData;
+import com.tencent.ilivesdk.tools.quality.LiveInfo;
 import com.tencent.ilivesdk.view.AVRootView;
 import com.tencent.livesdk.ILVCustomCmd;
 import com.tencent.livesdk.ILVLiveConfig;
 import com.tencent.livesdk.ILVLiveManager;
 import com.tencent.livesdk.ILVLiveRoomOption;
 import com.tencent.livesdk.ILVText;
+
+import java.util.Map;
 
 /**
  * Created by xkazerzhang on 2017/5/24.
@@ -45,8 +53,32 @@ public class DemoGuest extends Activity implements View.OnClickListener, ILVLive
     private AVRootView arvRoot;
     private TextView tvMsg;
     private ScrollView svScroll;
+    private boolean isInfoOn = true;
+    private Handler mainHandler = new Handler(Looper.getMainLooper());
 
     private String strMsg = "";
+
+    private Runnable infoRun = new Runnable() {
+        @Override
+        public void run() {
+            ILiveQualityData qualityData = ILiveRoomManager.getInstance().getQualityData();
+            if (null != qualityData){
+                String info = "上行速率:\t"+qualityData.getSendKbps()+"kbps\t"
+                        +"上行丢包率:\t"+qualityData.getSendLossRate()/100+"%\n\n"
+                        +"下行速率:\t"+qualityData.getRecvKbps()+"kbps\t"
+                        +"下行丢包率:\t"+qualityData.getRecvLossRate()/100+"%\n\n"
+                        +"应用CPU:\t"+qualityData.getAppCPURate()+"\t"
+                        +"系统CPU:\t"+qualityData.getSysCPURate()+"\n\n";
+                for (Map.Entry<String, LiveInfo> entry: qualityData.getLives().entrySet()){
+                    info += "\t"+entry.getKey()+"-"+entry.getValue().getWidth()+"*"+entry.getValue().getHeight()+"\n\n";
+                }
+                ((TextView)findViewById(R.id.tv_status)).setText(info);
+            }
+            if (ILiveRoomManager.getInstance().isEnterRoom()) {
+                mainHandler.postDelayed(infoRun, 2000);
+            }
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -98,6 +130,11 @@ public class DemoGuest extends Activity implements View.OnClickListener, ILVLive
                 break;
             case R.id.iv_return:
                 finish();
+                break;
+            case R.id.iv_info:
+                isInfoOn = !isInfoOn;
+                ((ImageView)findViewById(R.id.iv_info)).setImageResource(isInfoOn ? R.mipmap.ic_info_on : R.mipmap.ic_info_off);
+                findViewById(R.id.tv_status).setVisibility(isInfoOn ? View.VISIBLE : View.INVISIBLE);
                 break;
         }
     }
@@ -189,6 +226,8 @@ public class DemoGuest extends Activity implements View.OnClickListener, ILVLive
         etRoom.setEnabled(false);
         findViewById(R.id.tv_join).setVisibility(View.INVISIBLE);
         findViewById(R.id.ll_msg).setVisibility(View.VISIBLE);
+        findViewById(R.id.iv_info).setVisibility(View.VISIBLE);
+        mainHandler.postDelayed(infoRun, 500);
     }
 
     // 发送消息

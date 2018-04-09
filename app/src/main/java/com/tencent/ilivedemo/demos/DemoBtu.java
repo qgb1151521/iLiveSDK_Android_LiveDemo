@@ -8,6 +8,7 @@ import android.hardware.Camera;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.support.annotation.RequiresApi;
 import android.util.Log;
 import android.view.View;
@@ -25,6 +26,7 @@ import com.tencent.ilivedemo.model.Constants;
 import com.tencent.ilivedemo.model.MessageObservable;
 import com.tencent.ilivedemo.model.StatusObservable;
 import com.tencent.ilivedemo.model.UserInfo;
+import com.tencent.ilivedemo.ui.RadioGroupDialog;
 import com.tencent.ilivedemo.uiutils.DemoFunc;
 import com.tencent.ilivedemo.uiutils.DlgMgr;
 import com.tencent.ilivedemo.view.DemoEditText;
@@ -34,6 +36,8 @@ import com.tencent.ilivesdk.ILiveConstants;
 import com.tencent.ilivesdk.ILiveSDK;
 import com.tencent.ilivesdk.core.ILiveLoginManager;
 import com.tencent.ilivesdk.core.ILiveRoomManager;
+import com.tencent.ilivesdk.tools.quality.ILiveQualityData;
+import com.tencent.ilivesdk.tools.quality.LiveInfo;
 import com.tencent.ilivesdk.view.AVRootView;
 import com.tencent.livesdk.ILVCustomCmd;
 import com.tencent.livesdk.ILVLiveConfig;
@@ -41,6 +45,8 @@ import com.tencent.livesdk.ILVLiveConstants;
 import com.tencent.livesdk.ILVLiveManager;
 import com.tencent.livesdk.ILVLiveRoomOption;
 import com.tencent.livesdk.ILVText;
+
+import java.util.Map;
 
 /**
  * Created by xkazerzhang on 2017/5/24.
@@ -62,7 +68,31 @@ public class DemoBtu extends Activity implements View.OnClickListener, ILVLiveCo
     private boolean isMicOn = true;
     private boolean isFlashOn = false;
 
+    private boolean isInfoOn = true;
+    private Handler mainHandler = new Handler(Looper.getMainLooper());
     private String strMsg = "";
+
+    private Runnable infoRun = new Runnable() {
+        @Override
+        public void run() {
+            ILiveQualityData qualityData = ILiveRoomManager.getInstance().getQualityData();
+            if (null != qualityData){
+                String info = "上行速率:\t"+qualityData.getSendKbps()+"kbps\t"
+                        +"上行丢包率:\t"+qualityData.getSendLossRate()/100+"%\n\n"
+                        +"下行速率:\t"+qualityData.getRecvKbps()+"kbps\t"
+                        +"下行丢包率:\t"+qualityData.getRecvLossRate()/100+"%\n\n"
+                        +"应用CPU:\t"+qualityData.getAppCPURate()+"\t"
+                        +"系统CPU:\t"+qualityData.getSysCPURate()+"\n\n";
+                for (Map.Entry<String, LiveInfo> entry: qualityData.getLives().entrySet()){
+                    info += "\t"+entry.getKey()+"-"+entry.getValue().getWidth()+"*"+entry.getValue().getHeight()+"\n\n";
+                }
+                ((TextView)findViewById(R.id.tv_status)).setText(info);
+            }
+            if (ILiveRoomManager.getInstance().isEnterRoom()) {
+                mainHandler.postDelayed(infoRun, 2000);
+            }
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,6 +116,8 @@ public class DemoBtu extends Activity implements View.OnClickListener, ILVLiveCo
         ILVLiveManager.getInstance().setAvVideoView(arvRoot);
         MessageObservable.getInstance().addObserver(this);
         StatusObservable.getInstance().addObserver(this);
+
+        initRoleDialog();
 
         initILiveBeauty();
     }
@@ -158,6 +190,15 @@ public class DemoBtu extends Activity implements View.OnClickListener, ILVLiveCo
             case R.id.iv_return:
                 finish();
                 break;
+            case R.id.iv_info:
+                isInfoOn = !isInfoOn;
+                ((ImageView)findViewById(R.id.iv_info)).setImageResource(isInfoOn ? R.mipmap.ic_info_on : R.mipmap.ic_info_off);
+                findViewById(R.id.tv_status).setVisibility(isInfoOn ? View.VISIBLE : View.INVISIBLE);
+                break;
+            case R.id.iv_role:
+                if (null != roleDialog)
+                    roleDialog.show();
+                break;
         }
     }
 
@@ -218,6 +259,31 @@ public class DemoBtu extends Activity implements View.OnClickListener, ILVLiveCo
 
     private Context getContenxt() {
         return this;
+    }
+
+    // 角色对话框
+    private RadioGroupDialog roleDialog;
+    private void initRoleDialog() {
+        final String[] roles = new String[]{ "高清(960*540,25fps)","标清(640*368,20fps)", "流畅(640*368,15fps)"};
+        final String[] values = new String[]{Constants.HD_ROLE, Constants.SD_ROLE, Constants.LD_ROLE};
+        roleDialog = new RadioGroupDialog(this, roles);
+        roleDialog.setTitle(R.string.str_dt_change_role);
+        roleDialog.setSelected(0);
+
+        roleDialog.setOnItemClickListener(new RadioGroupDialog.onItemClickListener() {
+            @Override
+            public void onItemClick(int position) {
+                ILiveRoomManager.getInstance().changeRole(values[position], new ILiveCallBack() {
+                    @Override
+                    public void onSuccess(Object data) {}
+
+                    @Override
+                    public void onError(String module, int errCode, String errMsg) {
+                        DlgMgr.showMsg(getContenxt(), "change failed:"+module+"|"+errCode+"|"+errMsg);
+                    }
+                });
+            }
+        });
     }
 
     // 添加消息
@@ -306,6 +372,9 @@ public class DemoBtu extends Activity implements View.OnClickListener, ILVLiveCo
         etRoom.setEnabled(false);
         findViewById(R.id.tv_create).setVisibility(View.INVISIBLE);
         findViewById(R.id.ll_controller).setVisibility(View.VISIBLE);
+        findViewById(R.id.iv_info).setVisibility(View.VISIBLE);
+        findViewById(R.id.iv_role).setVisibility(View.VISIBLE);
+        mainHandler.postDelayed(infoRun, 500);
         Log.v(TAG, "afterCreate->show control");
     }
 

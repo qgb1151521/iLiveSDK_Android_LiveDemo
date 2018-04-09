@@ -20,4 +20,9 @@
         <item name="android:thumbOffset">8dp</item>
         <item name="android:thumb">@drawable/seek_thumb</item>
     </style>
+
+    <style name="common_dlg" parent="@android:style/Theme.Holo.Dialog">
+        <item name="android:windowNoTitle">false</item>
+        <item name="android:windowCloseOnTouchOutside">true</item>
+    </style>
 </resources>

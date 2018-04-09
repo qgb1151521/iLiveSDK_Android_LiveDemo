@@ -9,6 +9,12 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
+    <TextView
+        android:id="@+id/tv_status"
+        android:layout_marginTop="200dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
     <!-- 标题 -->
     <LinearLayout
         android:padding="10dp"
@@ -134,6 +140,29 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
+
+            <View android:layout_width="0dp"  android:layout_height="@dimen/icon_height" android:layout_weight="1" />
+
+            <ImageView
+                android:id="@+id/iv_info"
+                android:visibility="invisible"
+                android:src="@mipmap/ic_info_on"
+                android:clickable="true"
+                android:onClick="onClick"
+                android:layout_width="@dimen/icon_width"
+                android:layout_height="@dimen/icon_height" />
+
+            <View android:layout_width="0dp"  android:layout_height="@dimen/icon_height" android:layout_weight="1" />
+
+            <ImageView
+                android:id="@+id/iv_role"
+                android:visibility="invisible"
+                android:src="@mipmap/ic_role"
+                android:clickable="true"
+                android:onClick="onClick"
+                android:layout_width="@dimen/icon_width"
+                android:layout_height="@dimen/icon_height" />
+
             <View android:layout_width="0dp"  android:layout_height="@dimen/icon_height" android:layout_weight="1" />
 
             <ImageView

@@ -3,6 +3,7 @@ package com.tencent.ilivedemo;
 import android.app.Application;
 
 import com.tencent.ilivedemo.model.MessageObservable;
+import com.tencent.ilivesdk.ILiveConstants;
 import com.tencent.ilivesdk.ILiveSDK;
 import com.tencent.ilivesdk.core.ILiveLog;
 import com.tencent.livesdk.ILVLiveConfig;
@@ -19,6 +20,7 @@ public class DemoApp extends Application {
 
         if(MsfSdkUtils.isMainProcess(this)){    // 仅在主线程初始化
             // 初始化LiveSDK
+            ILiveSDK.getInstance().setCaptureMode(ILiveConstants.CAPTURE_MODE_SURFACEVIEW);
             ILiveLog.setLogLevel(ILiveLog.TILVBLogLevel.DEBUG);
             ILiveSDK.getInstance().initSdk(this, 1400028096, 11851);
             ILVLiveManager.getInstance().init(new ILVLiveConfig()

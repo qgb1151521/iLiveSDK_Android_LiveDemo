@@ -15,6 +15,13 @@ public class Constants {
     public static final String ROLE_GUEST = "Guest";
     public static final String ROLE_LIVEGUEST = "LiveGuest";
 
+    public static final String HD_ROLE = "HD";
+    public static final String SD_ROLE = "SD";
+    public static final String LD_ROLE = "LD";
+    public static final String HD_GUEST_ROLE = "HDGuest";
+    public static final String SD_GUEST_ROLE = "SDGuest";
+    public static final String LD_GUEST_ROLE = "LDGuest";
+
     // 直播业务id和appid，可在控制台的 直播管理中查看
     public static final int BIZID = 8525;
     public static final int APPID = 1253488539;     // 直播appid
