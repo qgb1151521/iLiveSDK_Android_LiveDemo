@@ -20,6 +20,7 @@ import com.tencent.TIMGroupSystemElem;
 import com.tencent.TIMGroupSystemElemType;
 import com.tencent.TIMMessage;
 import com.tencent.TIMUserProfile;
+import com.tencent.av.sdk.AVContext;
 import com.tencent.ilivedemo.R;
 import com.tencent.ilivedemo.model.Constants;
 import com.tencent.ilivedemo.model.MessageObservable;
@@ -63,7 +64,8 @@ public class DemoGuest extends Activity implements View.OnClickListener, ILVLive
         public void run() {
             ILiveQualityData qualityData = ILiveRoomManager.getInstance().getQualityData();
             if (null != qualityData){
-                String info = "上行速率:\t"+qualityData.getSendKbps()+"kbps\t"
+                String info = "AVSDK 版本: \t"+ AVContext.sdkVersion+"\n\n"
+                        +"上行速率:\t"+qualityData.getSendKbps()+"kbps\t"
                         +"上行丢包率:\t"+qualityData.getSendLossRate()/100+"%\n\n"
                         +"下行速率:\t"+qualityData.getRecvKbps()+"kbps\t"
                         +"下行丢包率:\t"+qualityData.getRecvLossRate()/100+"%\n\n"

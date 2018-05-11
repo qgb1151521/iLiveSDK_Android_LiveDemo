@@ -20,7 +20,7 @@ public class DemoApp extends Application {
 
         if(MsfSdkUtils.isMainProcess(this)){    // 仅在主线程初始化
             // 初始化LiveSDK
-            ILiveSDK.getInstance().setCaptureMode(ILiveConstants.CAPTURE_MODE_SURFACEVIEW);
+            ILiveSDK.getInstance().setCaptureMode(ILiveConstants.CAPTURE_MODE_SURFACETEXTURE);
             ILiveLog.setLogLevel(ILiveLog.TILVBLogLevel.DEBUG);
             ILiveSDK.getInstance().initSdk(this, 1400028096, 11851);
             ILVLiveManager.getInstance().init(new ILVLiveConfig()

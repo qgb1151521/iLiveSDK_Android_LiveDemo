@@ -16,6 +16,7 @@ import android.widget.TextView;
 
 import com.tencent.TIMMessage;
 import com.tencent.TIMUserProfile;
+import com.tencent.av.sdk.AVContext;
 import com.tencent.av.sdk.AVVideoCtrl;
 import com.tencent.ilivedemo.R;
 import com.tencent.ilivedemo.model.Constants;
@@ -30,6 +31,7 @@ import com.tencent.ilivesdk.ILiveCallBack;
 import com.tencent.ilivesdk.ILiveConstants;
 import com.tencent.ilivesdk.ILiveSDK;
 import com.tencent.ilivesdk.adapter.CommonConstants;
+import com.tencent.ilivesdk.core.ILiveLog;
 import com.tencent.ilivesdk.core.ILiveLoginManager;
 import com.tencent.ilivesdk.core.ILiveRoomManager;
 import com.tencent.ilivesdk.tools.quality.ILiveQualityData;
@@ -67,7 +69,8 @@ public class DemoHost extends Activity implements View.OnClickListener, ILVLiveC
         public void run() {
             ILiveQualityData qualityData = ILiveRoomManager.getInstance().getQualityData();
             if (null != qualityData){
-                String info = "上行速率:\t"+qualityData.getSendKbps()+"kbps\t"
+                String info = "AVSDK 版本: \t"+ AVContext.sdkVersion+"\n\n"
+                        +"上行速率:\t"+qualityData.getSendKbps()+"kbps\t"
                         +"上行丢包率:\t"+qualityData.getSendLossRate()/100+"%\n\n"
                         +"下行速率:\t"+qualityData.getRecvKbps()+"kbps\t"
                         +"下行丢包率:\t"+qualityData.getRecvLossRate()/100+"%\n\n"
