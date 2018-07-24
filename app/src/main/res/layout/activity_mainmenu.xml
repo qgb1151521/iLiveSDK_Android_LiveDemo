@@ -77,6 +77,15 @@
                 android:layout_height="wrap_content" />
 
             <com.tencent.ilivedemo.view.LineMenuView
+                android:id="@+id/lmv_render"
+                lmvattr:icon = "@mipmap/ic_ilvb"
+                lmvattr:title = "@string/str_menu_render"
+                android:clickable="true"
+                android:onClick="onClick"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+            <com.tencent.ilivedemo.view.LineMenuView
                 android:id="@+id/lmv_log"
                 lmvattr:icon = "@mipmap/ic_log"
                 lmvattr:title = "@string/str_menu_log"

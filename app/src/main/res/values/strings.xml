@@ -36,6 +36,7 @@
     <string name="str_menu_beauty">美颜</string>
     <string name="str_menu_live_guest">上麦</string>
     <string name="str_menu_replay">回放</string>
+    <string name="str_menu_render">分开渲染</string>
     <string name="str_menu_log">日志上报</string>
     <string name="str_menu_mix">云端混流</string>
 
@@ -69,6 +70,7 @@
     <string name="str_dt_hd">高清</string>
     <string name="str_dt_sd">标清</string>
     <string name="str_dt_ld">流畅</string>
+    <string name="str_tips_text">这一条很长很长的走马灯效果的文本，用于展示分开渲染的效果!</string>
 
     <string-array name="str_btu_type">
         <item>内置美颜</item>

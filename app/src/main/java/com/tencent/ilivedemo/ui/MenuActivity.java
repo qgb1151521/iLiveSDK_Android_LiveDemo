@@ -25,6 +25,8 @@ import com.tencent.ilivedemo.demos.DemoGuest;
 import com.tencent.ilivedemo.demos.DemoHost;
 import com.tencent.ilivedemo.demos.DemoLiveGuest;
 import com.tencent.ilivedemo.demos.DemoMix;
+import com.tencent.ilivedemo.demos.DemoRender;
+import com.tencent.ilivedemo.demos.DemoReplay;
 import com.tencent.ilivedemo.demos.DemoReplayList;
 import com.tencent.ilivedemo.model.StatusObservable;
 import com.tencent.ilivedemo.uiutils.DemoFunc;
@@ -75,6 +77,9 @@ public class MenuActivity extends Activity implements View.OnClickListener, ILiv
                 break;
             case R.id.lmv_beauty:
                 enterDemo(DemoBtu.class);
+                break;
+            case R.id.lmv_render:
+                enterDemo(DemoRender.class);
                 break;
             case R.id.lmv_log:
                 showLogDialog();
