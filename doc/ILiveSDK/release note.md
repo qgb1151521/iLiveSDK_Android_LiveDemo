@@ -1,5 +1,9 @@
 ## Release Note
 
+### V1.9.2(2018-08-02)
+ - 房间(摄像头)接口去时序化
+ - ILiveSDK添加addEventListener的方法添加[统一事件回调](doc/ILiveSDK/EventListener.md)
+
 ### V1.9.1(2018-07-18)
  - 修改进房privateMapKey配置方法为privateMapKey(原为authBuffer)
  - 修复云上环境旁路直播方向问题
@@ -31,7 +35,7 @@
 ### V1.8.4(2018-03-29)
  - 更新AVSDK到1.9.7.54(修复上一版本中的闪屏等问题)
  - 优化日志系统
- 
+
 ### V1.8.3(2018-03-07)
  - 更新AVSDK到1.9.7.16
  - 修复自定义spear配置未生效问题
@@ -70,7 +74,7 @@
  - 优化旋转切换前后置闪屏问题
  - 添加进房前摄像头预览分辨率及FPS设置
  - 添加进房后摄像头预览接口
- 
+
 ### V1.6.3(2017-09-13)
  - 更新AVSDK 1.9.2.57(修复部分crash)
  - 添加设置AVRootView自动渲染机制
@@ -81,7 +85,7 @@
  - 修复旋转闪屏问题
  - 优化摄像头状态管理
  - 修复Android 7.1.1悬浮窗问题
- 
+
 ### V1.6.0(2017-08-07)
  - 优化iLiveSDK登录及进出房间流程
  - 格式化iLiveSDK日志(统一配置IMSDK,AVSDK日志)
@@ -101,7 +105,7 @@
 ### V1.5.1(2017-06-16)
  - 优化静默模式
  - AVRootView中添加旋转校正setLocalRotationFix(本地)和setRemoteRotationFix(远程)*【对一些非常规机器，旋转方案不能匹配的，优先校正远程】*
- 
+
 ### V1.5.0(2017-06-05)
  - 优化旋转功能(支持横屏)
  - 新增视频数上限为10路
@@ -110,7 +114,7 @@
 
 ### V1.4.2(2017-05-11)
  - 修复加入群组失败引起进房间异常问题
- 
+
 ### V1.4.1(2017-04-26)
  - 修复无法指定IM群组问题
 
@@ -122,35 +126,35 @@
  - 优化群组绑定解接口可实现[大咖模式](https://github.com/zhaoyang21cn/ILiveSDK_Android_Demos/blob/master/doc/ILiveSDK/bigstar.md)
  - 优化登录逻辑等，修复切换房间异常等问题
 ---
- 
+
 ### V1.3.4(2017-03-24)
  - 重构ILiveRoomManager推流接口startPushStream(部分参数做了调整)
  - 增加[日志上报](https://github.com/zhaoyang21cn/suixinbo_doc/blob/master/doc2/loguploader.md)功能
  - 增加[音视频测速](https://github.com/zhaoyang21cn/suixinbo_doc/blob/master/doc2/speed%20test.md)接口
  - ILiveRoomOption开放硬件编解码配置接口(enableHwEnc, enableHwDnc)
  - 添加拖动边界面保护(避免小AVVideoView拖出AVRootView)
- 
+
 ### V1.3.3(2017-03-06)
  - 修正Android 7.0重复打LOG问题
  - 更新AVSDK 1.8.5.44 修正OPPO R9S黑屏问题
  - 重构录制接口
  - 进房可以配置是否开启AVSDK房间
 
- 
+
 ### V1.3.2.2(2017-02-29)
  - 修复多个bugly的库冲突问题
- 
+
 ### V1.3.2(2017-02-28)
  - 优化进出房间状态管理
  - 修复进房间10004问题
  - 细化WRONG_STATE[错误码](./error.md)
  - 优化质量数据获取接口[getQualityData](./quality.md)
- 
+
 ### V1.3.1(2017-02-14)
  - 修正两处渲染空指针
  - 更新AVSDK1.8.5
  - 自动创建房间号算法更新
- 
+
 ### V1.2.2(2017-01-22)
  - 修复横屏渲染问题
  - 优化房间内流程
@@ -160,16 +164,16 @@
  - 修复渲染保护
  - 默认关闭初始化拉取最近联系人及消息(用到的用户请在初始化iLiveSDK后调用IMSDK接口开启)
  - 新版本随心播 更新后台协议，调整为独立模式，更新部分信令格式
- 
+
 ### V1.2.0(2017-01-16)
  - 修改默认为支持后模式([参考文档](https://github.com/zhaoyang21cn/suixinbo_doc/blob/master/doc2/breakEvent.md))
  - 修复PC端多路视频不关闭问题
  - 开放surfaceView创建回调(AVRootView的setSurfaceCreateListener)
  - 优化旋转方案([参考文档](https://github.com/zhaoyang21cn/suixinbo_doc/blob/master/doc2/rotate.md))
- 
+
  ---
 
- 
+
 ### V1.1.1(2017-01-09)
 - 修复低概率渲染空指针异常
 - 修复绑定状态无画面被清除问题
@@ -218,7 +222,7 @@
 
 ### V0.4.1 (2016-11-22)
 - 修复切换后置摄像头相关获取cameraId不准确问题
-- 增加一个tlsLoginAll接口 一次性登录TLS IM AV 
+- 增加一个tlsLoginAll接口 一次性登录TLS IM AV
 
 ### V0.4.0 (2016-11-21)
 - 合并TLS登陆方式 和IOS对齐

@@ -16,9 +16,9 @@ compile 'com.tencent.ilivesdk:ilivesdk:1.9.1'
             
 ## SDK最近更新说明
 
-### V1.9.1(2018-07-18)
- - 修改进房privateMapKey配置方法为privateMapKey(原为authBuffer)
- - 修复云上环境旁路直播方向问题
+### V1.9.2(2018-08-02)
+ - 房间(摄像头)接口去时序化
+ - ILiveSDK添加addEventListener的方法添加[统一事件回调](doc/ILiveSDK/EventListener.md)
 
 [更多版本更新信息](doc/ILiveSDK/release%20note.md)
 
