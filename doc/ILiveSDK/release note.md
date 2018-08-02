@@ -2,7 +2,7 @@
 
 ### V1.9.2(2018-08-02)
  - 房间(摄像头)接口去时序化
- - ILiveSDK添加addEventListener的方法添加[统一事件回调](doc/ILiveSDK/EventListener.md)
+ - ILiveSDK添加addEventListener的方法添加[统一事件回调](EventListener.md)
  - 添加成员进出房间(群组)事件通知以及群组解散事件通知
 
 ### V1.9.1(2018-07-18)
