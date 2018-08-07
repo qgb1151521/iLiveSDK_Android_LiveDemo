@@ -42,6 +42,7 @@ ILiveSDK.getInstance().setChannelMode(CommonConstants.E_ChannelMode.E_ChannelIMS
 
 
 ## API文档
+[常用接口](/doc/ILiveSDK/api_interface.md)
 [API文档(1.8.2)](https://zhaoyang21cn.github.io/iLiveSDK_Help/android_help/)
 
 ## 直播术语解释
