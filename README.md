@@ -11,7 +11,7 @@ iLiveSDK在Android Studio上开发。
 
 
 核心功能     
-compile 'com.tencent.ilivesdk:ilivesdk:1.9.1'      
+compile 'com.tencent.ilivesdk:ilivesdk:1.9.2'      
 
             
 ## SDK最近更新说明
