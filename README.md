@@ -11,15 +11,14 @@ iLiveSDK在Android Studio上开发。
 
 
 核心功能     
-compile 'com.tencent.ilivesdk:ilivesdk:1.9.2'      
+compile 'com.tencent.ilivesdk:ilivesdk:1.9.3'      
 
             
 ## SDK最近更新说明
 
-### V1.9.2(2018-08-02)
- - 房间(摄像头)接口去时序化
- - ILiveSDK添加addEventListener的方法添加[统一事件回调](doc/ILiveSDK/EventListener.md)
- - 添加成员进出房间(群组)事件通知以及群组解散事件通知
+### V1.9.3(2018-08-23)
+ - 更新AVSDK到1.9.9.1013
+ - 添加测速类ILiveSpeedTest(可通过startSpeedTest进行测速)
 
 [更多版本更新信息](doc/ILiveSDK/release%20note.md)
 
