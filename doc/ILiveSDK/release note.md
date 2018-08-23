@@ -1,5 +1,9 @@
 ## Release Note
 
+### V1.9.3(2018-08-23)
+ - 更新AVSDK到1.9.9.1013
+ - 添加测速类ILiveSpeedTest(可通过startSpeedTest进行测速)
+
 ### V1.9.2(2018-08-02)
  - 房间(摄像头)接口去时序化
  - ILiveSDK添加addEventListener的方法添加[统一事件回调](EventListener.md)
