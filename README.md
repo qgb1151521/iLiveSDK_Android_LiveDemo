@@ -18,6 +18,7 @@ compile 'com.tencent.ilivesdk:ilivesdk:1.9.4'
 
 ### V1.9.4(2018-08-30)
  - 修改默认群组类型为ChatRoom
+ - 初始化接口废弃accountType参数(不再需要)
  - 修复房间断开连接(onRoomDisconnect)时摄像头状态异常
 
 [更多版本更新信息](doc/ILiveSDK/release%20note.md)
