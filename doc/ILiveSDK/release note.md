@@ -1,5 +1,9 @@
 ## Release Note
 
+### V1.9.4(2018-08-30)
+ - 修改默认群组类型为ChatRoom
+ - 修复房间断开连接(onRoomDisconnect)时摄像头状态异常
+
 ### V1.9.3(2018-08-23)
  - 更新AVSDK到1.9.9.1013
  - 添加测速类ILiveSpeedTest(可通过startSpeedTest进行测速)
