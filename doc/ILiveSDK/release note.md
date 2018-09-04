@@ -1,7 +1,7 @@
 ## Release Note
 
 ### V1.9.4(2018-08-30)
- - 修改默认群组类型为ChatRoom
+ - 修改默认群组类型为Public
  - 初始化接口废弃accountType参数(不再需要)
  - 修复房间断开连接(onRoomDisconnect)时摄像头状态异常
 
