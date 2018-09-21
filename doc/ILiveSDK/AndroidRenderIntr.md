@@ -120,7 +120,7 @@ rootViews[0] = (ILiveRootView)findViewById(R.id.ilrv_x);
 rootViews[1] = (ILiveRootView)findViewById(R.id.ilrv_y);
 rootViews[2] = (ILiveRootView)findViewById(R.id.ilrv_z);
 ```
-#### 4、 设置到视频房间
+#### 3、 设置到视频房间
 ```
 ILiveRoomManager.getInstance().initRootViewArr(rootViews);
 ```
