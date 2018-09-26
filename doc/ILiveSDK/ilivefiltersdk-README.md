@@ -34,10 +34,10 @@ p图收费版：
 
 最新版本说明
 > V1.1.22(2018-9-26)</br>
-1、 预处理支持多实例同时处理
-2、 优化美颜清晰度
-3、 更新最新p图版本1.7，优化p图版本性能
-4、 修改Context引起的内存泄漏
+(1) 预处理支持多实例同时处理</br>
+(2) 优化美颜清晰度</br>
+(3) 更新最新p图版本1.7，优化p图版本性能</br>
+(4) 修改Context引起的内存泄漏</br>
 </br>
 
 [查看更多版本更新记录](https://github.com/zhaoyang21cn/iLiveSDK_Android_LiveDemo/blob/master/doc/ILiveSDK/TILFilterSDK_ChangeList.md)
