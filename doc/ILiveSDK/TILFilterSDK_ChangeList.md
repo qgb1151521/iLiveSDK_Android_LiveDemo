@@ -49,3 +49,10 @@ setNoseScale->setNoseSlimLevel
 * 1、 优化绿幕功能；添加绿幕参数设置接口 setGreenScreenParam
 * 2、 优化预处理sdk代码
 </br>
+
+######  V1.1.22(2018-9-26)</br>
+* 1、 预处理支持多实例同时处理
+* 2、 优化美颜清晰度
+* 3、 更新最新p图版本1.7，优化p图版本性能
+* 4、 修改Context引起的内存泄漏
+</br>
