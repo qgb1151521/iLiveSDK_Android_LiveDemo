@@ -2,6 +2,7 @@
 
 ### V1.9.5(2018-10-22)
  - 云上环境支持手动推流录制
+ - 进房角色不存在时直接报错
  - 解除对IMSDK版本的强依赖(**由于IMSDK支持多加架构，需配置为armeabi/armeabi-v7a架构**)<br />
     (若想使用IMSDK 3.x可直接添加IMSDK版本号配置，如: compile 'com.tencent.imsdk:imsdk:3.3.2.13870.14059')
   
