@@ -72,4 +72,4 @@ loginCallBack|ILiveCallBack|登录回调
 
 - 4、在登录时将上面的参数传入spearCfg
 
-**注意: iOS注意要在双引号前加入转义符\**
+**注意: iOS注意要在双引号前加入转义符\\**
