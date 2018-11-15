@@ -31,7 +31,7 @@ ILiveRoomManager.getInstance().initAvRootView(avRootView);
 ```
 *LiveSDK*:
 ```
-ILVLiveManager.getInstance().setAvVideoView(avRootView);
+ILiveRoomManager.getInstance().initAvRootView(avRootView);
 ```
 *CallSDK*:
 ```

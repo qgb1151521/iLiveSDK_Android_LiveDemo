@@ -1,19 +1,16 @@
 package com.tencent.ilivedemo.model;
 
-import com.tencent.TIMMessage;
-import com.tencent.TIMUserProfile;
-import com.tencent.livesdk.ILVCustomCmd;
-import com.tencent.livesdk.ILVLiveConfig;
-import com.tencent.livesdk.ILVText;
+import com.tencent.ilivesdk.data.ILiveMessage;
+import com.tencent.ilivesdk.listener.ILiveMessageListener;
 
 import java.util.LinkedList;
 
 /**
  * 消息观察者
  */
-public class MessageObservable implements ILVLiveConfig.ILVLiveMsgListener{
+public class MessageObservable implements ILiveMessageListener {
     // 消息监听链表
-    private LinkedList<ILVLiveConfig.ILVLiveMsgListener> listObservers = new LinkedList<>();
+    private LinkedList<ILiveMessageListener> listObservers = new LinkedList<>();
     // 句柄
     private static MessageObservable instance;
 
@@ -31,41 +28,23 @@ public class MessageObservable implements ILVLiveConfig.ILVLiveMsgListener{
 
 
     // 添加观察者
-    public void addObserver(ILVLiveConfig.ILVLiveMsgListener listener){
+    public void addObserver(ILiveMessageListener listener){
         if (!listObservers.contains(listener)){
             listObservers.add(listener);
         }
     }
 
     // 移除观察者
-    public void deleteObserver(ILVLiveConfig.ILVLiveMsgListener listener){
+    public void deleteObserver(ILiveMessageListener listener){
         listObservers.remove(listener);
     }
 
     @Override
-    public void onNewTextMsg(ILVText text, String SenderId, TIMUserProfile userProfile) {
+    public void onNewMessage(ILiveMessage message) {
         // 拷贝链表
-        LinkedList<ILVLiveConfig.ILVLiveMsgListener> tmpList = new LinkedList<>(listObservers);
-        for (ILVLiveConfig.ILVLiveMsgListener listener : tmpList){
-            listener.onNewTextMsg(text, SenderId, userProfile);
-        }
-    }
-
-    @Override
-    public void onNewCustomMsg(ILVCustomCmd cmd, String id, TIMUserProfile userProfile) {
-        // 拷贝链表
-        LinkedList<ILVLiveConfig.ILVLiveMsgListener> tmpList = new LinkedList<>(listObservers);
-        for (ILVLiveConfig.ILVLiveMsgListener listener : tmpList){
-            listener.onNewCustomMsg(cmd, id, userProfile);
-        }
-    }
-
-    @Override
-    public void onNewOtherMsg(TIMMessage message) {
-        // 拷贝链表
-        LinkedList<ILVLiveConfig.ILVLiveMsgListener> tmpList = new LinkedList<>(listObservers);
-        for (ILVLiveConfig.ILVLiveMsgListener listener : tmpList){
-            listener.onNewOtherMsg(message);
+        LinkedList<ILiveMessageListener> tmpList = new LinkedList<>(listObservers);
+        for (ILiveMessageListener listener : tmpList){
+            listener.onNewMessage(message);
         }
     }
 }

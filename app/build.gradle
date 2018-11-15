@@ -33,6 +33,10 @@ android {
         versionCode 1
         versionName "1.0"
         multiDexEnabled true
+
+        ndk{
+            abiFilters 'armeabi', 'armeabi-v7a'
+        }
     }
 
     buildTypes {
@@ -47,8 +51,8 @@ android {
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
     compile 'com.android.support:appcompat-v7:24+'
-    compile 'com.tencent.ilivesdk:ilivesdk:1.9.4'
-    compile 'com.tencent.livesdk:livesdk:1.1.2'
+    compile 'com.tencent.ilivesdk:ilivesdk:1.9.5'
+    compile 'com.tencent.imsdk:imsdk:2.7.2.14125.14127'
     compile 'com.tencent.ilivefilter:ilivefilter:1.1.15'
     compile 'com.squareup.okhttp3:okhttp:3.2.0'
     compile 'com.tencent.rtmpsdk:rtmpsdk:1.0.8'

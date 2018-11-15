@@ -6,8 +6,6 @@ import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -34,13 +32,12 @@ import com.tencent.ilivesdk.ILiveMemStatusLisenter;
 import com.tencent.ilivesdk.ILiveSDK;
 import com.tencent.ilivesdk.core.ILiveLoginManager;
 import com.tencent.ilivesdk.core.ILiveRoomManager;
+import com.tencent.ilivesdk.core.ILiveRoomOption;
+import com.tencent.ilivesdk.data.ILiveMessage;
+import com.tencent.ilivesdk.data.msg.ILiveTextMessage;
+import com.tencent.ilivesdk.listener.ILiveMessageListener;
 import com.tencent.ilivesdk.view.AVRootView;
 import com.tencent.ilivesdk.view.AVVideoView;
-import com.tencent.livesdk.ILVCustomCmd;
-import com.tencent.livesdk.ILVLiveConfig;
-import com.tencent.livesdk.ILVLiveManager;
-import com.tencent.livesdk.ILVLiveRoomOption;
-import com.tencent.livesdk.ILVText;
 import com.tencent.rtmp.ITXLivePlayListener;
 import com.tencent.rtmp.TXLiveConstants;
 import com.tencent.rtmp.TXLivePlayConfig;
@@ -63,10 +60,12 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
+import static com.tencent.ilivesdk.data.ILiveMessage.ILIVE_MSG_TYPE_TEXT;
+
 /**
  * Created by xkazerzhang on 2017/7/11.
  */
-public class DemoMix extends Activity implements View.OnClickListener, ILVLiveConfig.ILVLiveMsgListener,
+public class DemoMix extends Activity implements View.OnClickListener, ILiveMessageListener,
         ILiveMemStatusLisenter, ITXLivePlayListener, ILiveLoginManager.TILVBStatusListener{
     private final String TAG = "DemoMix";
     private static final int MSG_RESUME_PLAY = 0x101;
@@ -125,7 +124,7 @@ public class DemoMix extends Activity implements View.OnClickListener, ILVLiveCo
         btnArr[2] = (Button)findViewById(R.id.btn_template3);
         btnArr[3] = (Button)findViewById(R.id.btn_template4);
 
-        ILVLiveManager.getInstance().setAvVideoView(avRootView);
+        ILiveRoomManager.getInstance().initAvRootView(avRootView);
         MessageObservable.getInstance().addObserver(this);
         StatusObservable.getInstance().addObserver(this);
 
@@ -166,7 +165,7 @@ public class DemoMix extends Activity implements View.OnClickListener, ILVLiveCo
     @Override
     protected void onPause() {
         super.onPause();
-        ILVLiveManager.getInstance().onPause();
+        ILiveRoomManager.getInstance().onPause();
         txvvPlayerView.onPause();
         if (null != mTxlpPlayer) {
             if (TXLivePlayer.PLAY_TYPE_LIVE_FLV == mPlayType) {
@@ -181,7 +180,7 @@ public class DemoMix extends Activity implements View.OnClickListener, ILVLiveCo
     @Override
     protected void onResume() {
         super.onResume();
-        ILVLiveManager.getInstance().onResume();
+        ILiveRoomManager.getInstance().onResume();
         txvvPlayerView.onResume();
         if (ILiveRoomManager.getInstance().isEnterRoom())
             mHandler.sendEmptyMessage(MSG_RESUME_PLAY);
@@ -192,7 +191,7 @@ public class DemoMix extends Activity implements View.OnClickListener, ILVLiveCo
         super.onDestroy();
         MessageObservable.getInstance().deleteObserver(this);
         StatusObservable.getInstance().deleteObserver(this);
-        ILVLiveManager.getInstance().onDestory();
+        ILiveRoomManager.getInstance().onDestory();
     }
 
     @Override
@@ -221,18 +220,13 @@ public class DemoMix extends Activity implements View.OnClickListener, ILVLiveCo
     }
 
     @Override
-    public void onNewTextMsg(ILVText text, String SenderId, TIMUserProfile userProfile) {
-        addMessage(SenderId, DemoFunc.getLimitString(text.getText(), Constants.MAX_SIZE));
-    }
-
-    @Override
-    public void onNewCustomMsg(ILVCustomCmd cmd, String id, TIMUserProfile userProfile) {
-
-    }
-
-    @Override
-    public void onNewOtherMsg(TIMMessage message) {
-
+    public void onNewMessage(ILiveMessage message) {
+        switch (message.getMsgType()){
+            case ILIVE_MSG_TYPE_TEXT:
+                ILiveTextMessage textMessage = (ILiveTextMessage)message;
+                addMessage(textMessage.getSender(), DemoFunc.getLimitString(textMessage.getText(), Constants.MAX_SIZE));
+                break;
+        }
     }
 
     @Override
@@ -318,11 +312,11 @@ public class DemoMix extends Activity implements View.OnClickListener, ILVLiveCo
             DlgMgr.showMsg(getContenxt(), getString(R.string.str_tip_num_error));
             return;
         }
-        ILVLiveRoomOption option = new ILVLiveRoomOption("")
+        ILiveRoomOption option = new ILiveRoomOption("")
                 .videoMode(ILiveConstants.VIDEOMODE_NORMAL)
                 .controlRole(Constants.ROLE_LIVEGUEST)
                 .autoFocus(true);
-        ILVLiveManager.getInstance().joinRoom(roomId, option, new ILiveCallBack() {
+        ILiveRoomManager.getInstance().joinRoom(roomId, option, new ILiveCallBack() {
             @Override
             public void onSuccess(Object data) {
                 afterCreate();
@@ -362,13 +356,13 @@ public class DemoMix extends Activity implements View.OnClickListener, ILVLiveCo
             DlgMgr.showMsg(getContenxt(), getString(R.string.str_tip_num_error));
             return;
         }
-        ILVLiveRoomOption option = new ILVLiveRoomOption(ILiveLoginManager.getInstance().getMyUserId())
+        ILiveRoomOption option = new ILiveRoomOption(ILiveLoginManager.getInstance().getMyUserId())
                 .setRoomMemberStatusLisenter(this)
                 .videoMode(ILiveConstants.VIDEOMODE_NORMAL)
                 .controlRole(Constants.ROLE_MASTER)
                 .autoFocus(true);
         UserInfo.getInstance().setRoom(roomId);
-        ILVLiveManager.getInstance().createRoom(UserInfo.getInstance().getRoom(),
+        ILiveRoomManager.getInstance().createRoom(UserInfo.getInstance().getRoom(),
                 option, new ILiveCallBack() {
                     @Override
                     public void onSuccess(Object data) {

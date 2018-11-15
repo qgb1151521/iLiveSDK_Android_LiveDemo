@@ -11,13 +11,13 @@
 
 ```java            
   //创建房间配置项
-            ILVLiveRoomOption hostOption = new ILVLiveRoomOption(null)
+            ILiveRoomOption hostOption = new ILiveRoomOption(null)
                     .controlRole(Constants.HOST_ROLE)//角色设置
                     .authBits(AVRoomMulti.AUTH_BITS_DEFAULT)//权限设置
                     .cameraId(ILiveConstants.FRONT_CAMERA)//摄像头前置后置
                     .videoRecvMode(AVRoomMulti.VIDEO_RECV_MODE_SEMI_AUTO_RECV_CAMERA_VIDEO);//是否开始半自动接收
            //创建房间
-            ILVLiveManager.getInstance().createRoom(room, hostOption, new ILiveCallBack() {
+            ILiveRoomManager.getInstance().createRoom(room, hostOption, new ILiveCallBack() {
                 @Override
                 public void onSuccess(Object data) {
                     Toast.makeText(LiveActivity.this, "create room  ok", Toast.LENGTH_SHORT).show();

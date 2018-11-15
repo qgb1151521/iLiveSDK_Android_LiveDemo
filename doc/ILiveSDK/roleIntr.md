@@ -16,7 +16,7 @@
 
 Android:
 ```
-ILVLiveRoomOption hostOption = new ILVLiveRoomOption(hostId)
+ILiveRoomOption hostOption = new ILiveRoomOption(hostId)
                 .controlRole("LiveMaster");     // 使用 LiveMaster 角色
 ```
 

@@ -18,7 +18,7 @@
                         ILiveLog.e(TAG, ILiveConstants.LOG_KEY_PR + "|createRoom->im room exist!");
                         isHost = true;
                         quiteChatBtn.setVisibility(View.VISIBLE);
-//                        ILVLiveRoomOption option = new ILVLiveRoomOption(""+chatId.getText());
+//                        ILiveRoomOption option = new ILiveRoomOption(""+chatId.getText());
                         ILiveRoomManager.getInstance().bindIMGroupId(""+chatId.getText());
 
                     }
@@ -27,7 +27,7 @@
                 @Override
                 public void onSuccess(String s) {
                     Toast.makeText(LiveActivity.this, "create chatRoom succ!! ", Toast.LENGTH_SHORT).show();
-//                    ILVLiveRoomOption option = new ILVLiveRoomOption();
+//                    ILiveRoomOption option = new ILiveRoomOption();
                     ILiveRoomManager.getInstance().bindIMGroupId(""+chatId.getText());
                 }
             });

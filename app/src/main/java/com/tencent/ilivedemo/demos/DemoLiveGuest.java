@@ -35,21 +35,23 @@ import com.tencent.ilivesdk.ILiveConstants;
 import com.tencent.ilivesdk.ILiveSDK;
 import com.tencent.ilivesdk.core.ILiveLoginManager;
 import com.tencent.ilivesdk.core.ILiveRoomManager;
+import com.tencent.ilivesdk.core.ILiveRoomOption;
+import com.tencent.ilivesdk.data.ILiveMessage;
+import com.tencent.ilivesdk.data.msg.ILiveTextMessage;
+import com.tencent.ilivesdk.listener.ILiveEventHandler;
+import com.tencent.ilivesdk.listener.ILiveMessageListener;
 import com.tencent.ilivesdk.tools.quality.ILiveQualityData;
 import com.tencent.ilivesdk.tools.quality.LiveInfo;
 import com.tencent.ilivesdk.view.AVRootView;
-import com.tencent.livesdk.ILVCustomCmd;
-import com.tencent.livesdk.ILVLiveConfig;
-import com.tencent.livesdk.ILVLiveManager;
-import com.tencent.livesdk.ILVLiveRoomOption;
-import com.tencent.livesdk.ILVText;
 
 import java.util.Map;
+
+import static com.tencent.ilivesdk.data.ILiveMessage.ILIVE_MSG_TYPE_TEXT;
 
 /**
  * Created by xkazerzhang on 2017/5/24.
  */
-public class DemoLiveGuest extends Activity implements View.OnClickListener, ILVLiveConfig.ILVLiveMsgListener, ILiveLoginManager.TILVBStatusListener{
+public class DemoLiveGuest extends Activity implements View.OnClickListener, ILiveMessageListener, ILiveLoginManager.TILVBStatusListener{
     private final String TAG = "DemoLiveGuest";
     private DemoEditText etRoom;
     private TextView tvMsg;
@@ -101,21 +103,35 @@ public class DemoLiveGuest extends Activity implements View.OnClickListener, ILV
 
         initRoleDialog();
 
-        ILVLiveManager.getInstance().setAvVideoView(arvRoot);
+        ILiveRoomManager.getInstance().initAvRootView(arvRoot);
         MessageObservable.getInstance().addObserver(this);
         StatusObservable.getInstance().addObserver(this);
+
+        ILiveSDK.getInstance().addEventHandler(new ILiveEventHandler(){
+            @Override
+            public void onGroupDisband(int roomId, String groupId) {
+                if (groupId.equals(ILiveRoomManager.getInstance().getIMGroupId())) {
+                    DlgMgr.showMsg(getContenxt(), getString(R.string.str_tips_discuss)).setOnCancelListener(new DialogInterface.OnCancelListener() {
+                        @Override
+                        public void onCancel(DialogInterface dialogInterface) {
+                            finish();
+                        }
+                    });
+                }
+            }
+        });
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        ILVLiveManager.getInstance().onPause();
+        ILiveRoomManager.getInstance().onPause();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        ILVLiveManager.getInstance().onResume();
+        ILiveRoomManager.getInstance().onResume();
     }
 
     @Override
@@ -123,7 +139,7 @@ public class DemoLiveGuest extends Activity implements View.OnClickListener, ILV
         super.onDestroy();
         MessageObservable.getInstance().deleteObserver(this);
         StatusObservable.getInstance().deleteObserver(this);
-        ILVLiveManager.getInstance().onDestory();
+        ILiveRoomManager.getInstance().onDestory();
     }
 
     @Override
@@ -172,41 +188,12 @@ public class DemoLiveGuest extends Activity implements View.OnClickListener, ILV
     }
 
     @Override
-    public void onNewTextMsg(ILVText text, String SenderId, TIMUserProfile userProfile) {
-        addMessage(SenderId, DemoFunc.getLimitString(text.getText(), Constants.MAX_SIZE));
-    }
-
-    @Override
-    public void onNewCustomMsg(ILVCustomCmd cmd, String id, TIMUserProfile userProfile) {
-
-    }
-
-    @Override
-    public void onNewOtherMsg(TIMMessage message) {
-        if (message.getConversation() != null && message.getConversation().getPeer() != null){
-            if (message.getConversation().getType()== TIMConversationType.Group
-                    && !ILiveRoomManager.getInstance().getIMGroupId().equals(message.getConversation().getPeer())) {
-                return;
-            }
-        }
-
-        for (int j = 0; j < message.getElementCount(); j++) {
-            if (message.getElement(j) == null)
-                continue;
-            TIMElem elem = message.getElement(j);
-            TIMElemType type = elem.getType();
-
-            //系统消息
-            if (type == TIMElemType.GroupSystem) {  // 群组解散消息
-                if (TIMGroupSystemElemType.TIM_GROUP_SYSTEM_DELETE_GROUP_TYPE == ((TIMGroupSystemElem) elem).getSubtype()) {
-                    DlgMgr.showMsg(getContenxt(), getString(R.string.str_tips_discuss)).setOnCancelListener(new DialogInterface.OnCancelListener() {
-                        @Override
-                        public void onCancel(DialogInterface dialogInterface) {
-                            finish();
-                        }
-                    });
-                }
-            }
+    public void onNewMessage(ILiveMessage message) {
+        switch (message.getMsgType()){
+            case ILIVE_MSG_TYPE_TEXT:
+                ILiveTextMessage textMessage = (ILiveTextMessage)message;
+                addMessage(textMessage.getSender(), DemoFunc.getLimitString(textMessage.getText(), Constants.MAX_SIZE));
+                break;
         }
     }
 
@@ -258,11 +245,11 @@ public class DemoLiveGuest extends Activity implements View.OnClickListener, ILV
             DlgMgr.showMsg(getContenxt(), getString(R.string.str_tip_num_error));
             return;
         }
-        ILVLiveRoomOption option = new ILVLiveRoomOption(ILiveLoginManager.getInstance().getMyUserId())
+        ILiveRoomOption option = new ILiveRoomOption(ILiveLoginManager.getInstance().getMyUserId())
                 .controlRole(Constants.ROLE_LIVEGUEST)
                 .videoMode(ILiveConstants.VIDEOMODE_NORMAL)
                 .autoFocus(true);
-        ILVLiveManager.getInstance().joinRoom(roomId,
+        ILiveRoomManager.getInstance().joinRoom(roomId,
                 option, new ILiveCallBack() {
                     @Override
                     public void onSuccess(Object data) {

@@ -28,14 +28,13 @@ import com.tencent.ilivesdk.ILiveConstants;
 import com.tencent.ilivesdk.ILiveSDK;
 import com.tencent.ilivesdk.core.ILiveLoginManager;
 import com.tencent.ilivesdk.core.ILiveRoomManager;
+import com.tencent.ilivesdk.core.ILiveRoomOption;
+import com.tencent.ilivesdk.data.ILiveMessage;
+import com.tencent.ilivesdk.data.msg.ILiveTextMessage;
+import com.tencent.ilivesdk.listener.ILiveMessageListener;
 import com.tencent.ilivesdk.tools.quality.ILiveQualityData;
 import com.tencent.ilivesdk.tools.quality.LiveInfo;
 import com.tencent.ilivesdk.view.AVRootView;
-import com.tencent.livesdk.ILVCustomCmd;
-import com.tencent.livesdk.ILVLiveConfig;
-import com.tencent.livesdk.ILVLiveManager;
-import com.tencent.livesdk.ILVLiveRoomOption;
-import com.tencent.livesdk.ILVText;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -52,10 +51,13 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
+import static com.tencent.ilivesdk.data.ILiveMessage.ILIVE_MSG_TYPE_CUSTOM;
+import static com.tencent.ilivesdk.data.ILiveMessage.ILIVE_MSG_TYPE_TEXT;
+
 /**
  * Created by xkazerzhang on 2017/5/24.
  */
-public class DemoCross extends Activity implements View.OnClickListener, ILVLiveConfig.ILVLiveMsgListener, ILiveLoginManager.TILVBStatusListener{
+public class DemoCross extends Activity implements View.OnClickListener, ILiveMessageListener, ILiveLoginManager.TILVBStatusListener{
     private final String TAG = "DemoCross";
     private DemoEditText etRoom, etDstRoom, etDstUser;
     private TextView tvMsg, tvCross;
@@ -113,7 +115,7 @@ public class DemoCross extends Activity implements View.OnClickListener, ILVLive
         etDstRoom = (DemoEditText)findViewById(R.id.et_dst_room);
         tvCross = (TextView)findViewById(R.id.tv_cross);
 
-        ILVLiveManager.getInstance().setAvVideoView(arvRoot);
+        ILiveRoomManager.getInstance().initAvRootView(arvRoot);
         MessageObservable.getInstance().addObserver(this);
         StatusObservable.getInstance().addObserver(this);
 
@@ -126,13 +128,13 @@ public class DemoCross extends Activity implements View.OnClickListener, ILVLive
     @Override
     protected void onPause() {
         super.onPause();
-        ILVLiveManager.getInstance().onPause();
+        ILiveRoomManager.getInstance().onPause();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        ILVLiveManager.getInstance().onResume();
+        ILiveRoomManager.getInstance().onResume();
     }
 
     @Override
@@ -140,7 +142,7 @@ public class DemoCross extends Activity implements View.OnClickListener, ILVLive
         super.onDestroy();
         MessageObservable.getInstance().deleteObserver(this);
         StatusObservable.getInstance().deleteObserver(this);
-        ILVLiveManager.getInstance().onDestory();
+        ILiveRoomManager.getInstance().onDestory();
     }
 
     @Override
@@ -191,18 +193,15 @@ public class DemoCross extends Activity implements View.OnClickListener, ILVLive
     }
 
     @Override
-    public void onNewTextMsg(ILVText text, String SenderId, TIMUserProfile userProfile) {
-        addMessage(SenderId, DemoFunc.getLimitString(text.getText(), Constants.MAX_SIZE));
-    }
-
-    @Override
-    public void onNewCustomMsg(ILVCustomCmd cmd, String id, TIMUserProfile userProfile) {
-
-    }
-
-    @Override
-    public void onNewOtherMsg(TIMMessage message) {
-
+    public void onNewMessage(ILiveMessage message) {
+        switch (message.getMsgType()){
+            case ILIVE_MSG_TYPE_TEXT:
+                ILiveTextMessage textMessage = (ILiveTextMessage)message;
+                addMessage(textMessage.getSender(), DemoFunc.getLimitString(textMessage.getText(), Constants.MAX_SIZE));
+                break;
+            case ILIVE_MSG_TYPE_CUSTOM:
+                break;
+        }
     }
 
     @Override
@@ -228,11 +227,11 @@ public class DemoCross extends Activity implements View.OnClickListener, ILVLive
             DlgMgr.showMsg(getContenxt(), getString(R.string.str_tip_num_error));
             return;
         }
-        ILVLiveRoomOption option = new ILVLiveRoomOption(ILiveLoginManager.getInstance().getMyUserId())
+        ILiveRoomOption option = new ILiveRoomOption()
                 .controlRole(Constants.ROLE_MASTER)
                 .videoMode(ILiveConstants.VIDEOMODE_NORMAL)
                 .autoFocus(true);
-        ILVLiveManager.getInstance().createRoom(roomId,
+        ILiveRoomManager.getInstance().createRoom(roomId,
                 option, new ILiveCallBack() {
                     @Override
                     public void onSuccess(Object data) {
@@ -323,7 +322,7 @@ public class DemoCross extends Activity implements View.OnClickListener, ILVLive
 
     private void cancelCross(){
         if (ILiveRoomManager.getInstance().isEnterRoom()) {
-            ILVLiveManager.getInstance().unlinkRoom(new ILiveCallBack() {
+            ILiveRoomManager.getInstance().unlinkRoom(new ILiveCallBack() {
                 @Override
                 public void onSuccess(Object data) {
                 }
@@ -370,7 +369,7 @@ public class DemoCross extends Activity implements View.OnClickListener, ILVLive
                 ILiveSDK.getInstance().runOnMainThread(new Runnable() {
                     @Override
                     public void run() {
-                        ILVLiveManager.getInstance().linkRoom(dstRoomId, dstUser, data, new ILiveCallBack() {
+                        ILiveRoomManager.getInstance().linkRoom(dstRoomId, dstUser, data, new ILiveCallBack() {
                             @Override
                             public void onSuccess(Object data) {
                             }

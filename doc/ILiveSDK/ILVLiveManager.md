@@ -38,7 +38,7 @@ compile 'com.tencent.livesdk:livesdk:1.1.4'
 ILiveSDK.getInstance().initSdk(getApplicationContext(), appid, accoutype);
 //初始化直播场景
 ILVLiveConfig liveConfig = new ILVLiveConfig();
-ILVLiveManager.getInstance().init(liveConfig);
+ILiveRoomManager.getInstance().init(liveConfig);
 ```  
 
 
@@ -78,18 +78,18 @@ ILiveLoginManager.getInstance().iLiveLogin(ILiveSDK.getInstance().getMyUserId(),
 | 参数类型| 说明 |
 |---------|---------|
 | int | 房间id 房间唯一标识 建议由业务方后台统一分配  |
-| ILVLiveRoomOption | 房间配置项 可以设置角色 权限 主播ID 摄像头参数等 具体参考类ILVLiveRoomOption |
+| ILiveRoomOption | 房间配置项 可以设置角色 权限 主播ID 摄像头参数等 具体参考类ILVLiveRoomOption |
 | ILiveCallBack | 创建房间回调接口。通知创建房间是否成功 |
 
 ```java            
   //创建房间配置项
-            ILVLiveRoomOption hostOption = new ILVLiveRoomOption(null)
+            ILiveRoomOption hostOption = new ILiveRoomOption(null)
                     .controlRole(Constants.HOST_ROLE)//角色设置
                     .authBits(AVRoomMulti.AUTH_BITS_DEFAULT)//权限设置
                     .cameraId(ILiveConstants.FRONT_CAMERA)//摄像头前置后置
                     .videoRecvMode(AVRoomMulti.VIDEO_RECV_MODE_SEMI_AUTO_RECV_CAMERA_VIDEO);//是否开始半自动接收
            //创建房间
-            ILVLiveManager.getInstance().createRoom(room, hostOption, new ILiveCallBack() {
+            ILiveRoomManager.getInstance().createRoom(room, hostOption, new ILiveCallBack() {
                 @Override
                 public void onSuccess(Object data) {
                     Toast.makeText(LiveActivity.this, "create room  ok", Toast.LENGTH_SHORT).show();
@@ -121,14 +121,14 @@ ILiveLoginManager.getInstance().iLiveLogin(ILiveSDK.getInstance().getMyUserId(),
 
 
            //加入房间配置项
-            ILVLiveRoomOption memberOption = new ILVLiveRoomOption(hostId)
+            ILiveRoomOption memberOption = new ILiveRoomOption(hostId)
                     .autoCamera(false) //是否自动打开摄像头
                     .controlRole(Constants.NORMAL_MEMBER_ROLE) //角色设置
                     .authBits(AVRoomMulti.AUTH_BITS_JOIN_ROOM | AVRoomMulti.AUTH_BITS_RECV_AUDIO |              AVRoomMulti.AUTH_BITS_RECV_CAMERA_VIDEO | AVRoomMulti.AUTH_BITS_RECV_SCREEN_VIDEO) //权限设置
                     .videoRecvMode(AVRoomMulti.VIDEO_RECV_MODE_SEMI_AUTO_RECV_CAMERA_VIDEO) //是否开始半自动接收
                     .autoMic(false);//是否自动打开mic
             //加入房间
-            ILVLiveManager.getInstance().joinRoom(room, memberOption, new ILiveCallBack() {
+            ILiveRoomManager.getInstance().joinRoom(room, memberOption, new ILiveCallBack() {
                 @Override
                 public void onSuccess(Object data) {
                     bEnterRoom = true;
@@ -161,7 +161,7 @@ ILiveLoginManager.getInstance().iLiveLogin(ILiveSDK.getInstance().getMyUserId(),
         
         
         avRootView = (AVRootView) findViewById(R.id.av_root_view);
-        ILVLiveManager.getInstance().setAvVideoView(avRootView);
+        ILiveRoomManager.getInstance().initAvRootView(avRootView);
 ```  
         
 [信令及上麦参见](./ILVLiveSenior.md)        

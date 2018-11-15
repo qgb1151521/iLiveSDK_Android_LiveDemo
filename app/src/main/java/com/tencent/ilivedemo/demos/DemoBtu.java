@@ -36,22 +36,27 @@ import com.tencent.ilivesdk.ILiveConstants;
 import com.tencent.ilivesdk.ILiveSDK;
 import com.tencent.ilivesdk.core.ILiveLoginManager;
 import com.tencent.ilivesdk.core.ILiveRoomManager;
+import com.tencent.ilivesdk.core.ILiveRoomOption;
+import com.tencent.ilivesdk.data.ILiveMessage;
+import com.tencent.ilivesdk.data.msg.ILiveCustomMessage;
+import com.tencent.ilivesdk.data.msg.ILiveTextMessage;
+import com.tencent.ilivesdk.listener.ILiveMessageListener;
 import com.tencent.ilivesdk.tools.quality.ILiveQualityData;
 import com.tencent.ilivesdk.tools.quality.LiveInfo;
 import com.tencent.ilivesdk.view.AVRootView;
-import com.tencent.livesdk.ILVCustomCmd;
-import com.tencent.livesdk.ILVLiveConfig;
-import com.tencent.livesdk.ILVLiveConstants;
-import com.tencent.livesdk.ILVLiveManager;
-import com.tencent.livesdk.ILVLiveRoomOption;
-import com.tencent.livesdk.ILVText;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.json.JSONTokener;
 
 import java.util.Map;
+
+import static com.tencent.ilivesdk.data.ILiveMessage.*;
 
 /**
  * Created by xkazerzhang on 2017/5/24.
  */
-public class DemoBtu extends Activity implements View.OnClickListener, ILVLiveConfig.ILVLiveMsgListener,
+public class DemoBtu extends Activity implements View.OnClickListener, ILiveMessageListener,
         SeekBar.OnSeekBarChangeListener, ILiveLoginManager.TILVBStatusListener {
     private final String TAG = "DemoBtu";
     private DemoEditText etRoom;
@@ -113,7 +118,7 @@ public class DemoBtu extends Activity implements View.OnClickListener, ILVLiveCo
         sbBeauty.setOnSeekBarChangeListener(this);
         sbWhite.setOnSeekBarChangeListener(this);
 
-        ILVLiveManager.getInstance().setAvVideoView(arvRoot);
+        ILiveRoomManager.getInstance().initAvRootView(arvRoot);
         MessageObservable.getInstance().addObserver(this);
         StatusObservable.getInstance().addObserver(this);
 
@@ -125,13 +130,13 @@ public class DemoBtu extends Activity implements View.OnClickListener, ILVLiveCo
     @Override
     protected void onPause() {
         super.onPause();
-        ILVLiveManager.getInstance().onPause();
+        ILiveRoomManager.getInstance().onPause();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        ILVLiveManager.getInstance().onResume();
+        ILiveRoomManager.getInstance().onResume();
     }
 
     @Override
@@ -139,7 +144,7 @@ public class DemoBtu extends Activity implements View.OnClickListener, ILVLiveCo
         super.onDestroy();
         MessageObservable.getInstance().deleteObserver(this);
         StatusObservable.getInstance().deleteObserver(this);
-        ILVLiveManager.getInstance().onDestory();
+        ILiveRoomManager.getInstance().onDestory();
 
         if (null != mUDFilter) {
             mUDFilter.setFilter(-1);
@@ -234,15 +239,24 @@ public class DemoBtu extends Activity implements View.OnClickListener, ILVLiveCo
     }
 
     @Override
-    public void onNewTextMsg(ILVText text, String SenderId, TIMUserProfile userProfile) {
-        addMessage(SenderId, DemoFunc.getLimitString(text.getText(), Constants.MAX_SIZE));
-    }
-
-    @Override
-    public void onNewCustomMsg(ILVCustomCmd cmd, String id, TIMUserProfile userProfile) {
-        switch (cmd.getCmd()) {
-            case ILVLiveConstants.ILVLIVE_CMD_LINKROOM_REQ:     // 跨房邀请
-                linkRoomReq(id);
+    public void onNewMessage(ILiveMessage message) {
+        switch (message.getMsgType()){
+            case ILIVE_MSG_TYPE_TEXT:
+                ILiveTextMessage textMessage = (ILiveTextMessage)message;
+                addMessage(textMessage.getSender(), DemoFunc.getLimitString(textMessage.getText(), Constants.MAX_SIZE));
+                break;
+            case ILIVE_MSG_TYPE_CUSTOM:
+                ILiveCustomMessage customMessage = (ILiveCustomMessage)message;
+                String data = new String(customMessage.getData());
+                try {
+                    JSONTokener jsonParser = new JSONTokener(data);
+                    JSONObject json = (JSONObject) jsonParser.nextValue();
+                    int action = json.getInt(Constants.CMD_KEY);
+                    if (action == Constants.ILVLIVE_CMD_LINKROOM_REQ)
+                        linkRoomReq(customMessage.getSender());
+                }catch (Exception e){
+                    // 处理异常
+                }
                 break;
         }
     }
@@ -250,11 +264,6 @@ public class DemoBtu extends Activity implements View.OnClickListener, ILVLiveCo
     @Override
     public void onForceOffline(int error, String message) {
         finish();
-    }
-
-    @Override
-    public void onNewOtherMsg(TIMMessage message) {
-
     }
 
     private Context getContenxt() {
@@ -299,11 +308,12 @@ public class DemoBtu extends Activity implements View.OnClickListener, ILVLiveCo
             DlgMgr.showMsg(getContenxt(), getString(R.string.str_tip_num_error));
             return;
         }
-        ILVLiveRoomOption option = new ILVLiveRoomOption("")
+
+        ILiveRoomOption option = new ILiveRoomOption()
                 .videoMode(ILiveConstants.VIDEOMODE_NORMAL)
                 .controlRole(Constants.ROLE_LIVEGUEST)
                 .autoFocus(true);
-        ILVLiveManager.getInstance().joinRoom(roomId, option, new ILiveCallBack() {
+        ILiveRoomManager.getInstance().joinRoom(roomId, option, new ILiveCallBack() {
             @Override
             public void onSuccess(Object data) {
                 afterCreate();
@@ -343,11 +353,11 @@ public class DemoBtu extends Activity implements View.OnClickListener, ILVLiveCo
             DlgMgr.showMsg(getContenxt(), getString(R.string.str_tip_num_error));
             return;
         }
-        ILVLiveRoomOption option = new ILVLiveRoomOption(ILiveLoginManager.getInstance().getMyUserId())
+        ILiveRoomOption option = new ILiveRoomOption()
                 .videoMode(ILiveConstants.VIDEOMODE_NORMAL)
                 .controlRole(Constants.ROLE_MASTER)
                 .autoFocus(true);
-        ILVLiveManager.getInstance().createRoom(roomId,
+        ILiveRoomManager.getInstance().createRoom(roomId,
                 option, new ILiveCallBack() {
                     @Override
                     public void onSuccess(Object data) {
@@ -429,14 +439,30 @@ public class DemoBtu extends Activity implements View.OnClickListener, ILVLiveCo
         }
     }
 
+    // 生成内部信令
+    private String jsonToString(int cmd, String param) {
+        JSONObject inviteCmd = new JSONObject();
+        try {
+            inviteCmd.put(Constants.CMD_KEY, cmd);
+            inviteCmd.put(Constants.CMD_PARAM, param);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return inviteCmd.toString();
+    }
+
     // 拒绝跨房连麦
-    private void refuseLink(String id) {
-        ILVLiveManager.getInstance().refuseLinkRoom(id, null);
+    private void refuseLink(String id){
+        String command = jsonToString(Constants.ILVLIVE_CMD_LINKROOM_REFUSE, "");
+        ILiveCustomMessage customMessage = new ILiveCustomMessage(command.getBytes(), "");
+        ILiveRoomManager.getInstance().sendC2COnlineMessage(id, customMessage, null);
     }
 
     // 同意跨房连麦
-    private void acceptLink(String id) {
-        ILVLiveManager.getInstance().acceptLinkRoom(id, null);
+    private void acceptLink(String id){
+        String command = jsonToString(Constants.ILVLIVE_CMD_LINKROOM_ACCEPT, "");
+        ILiveCustomMessage customMessage = new ILiveCustomMessage(command.getBytes(), "");
+        ILiveRoomManager.getInstance().sendC2COnlineMessage(id, customMessage, null);
     }
 
     private void linkRoomReq(final String id) {

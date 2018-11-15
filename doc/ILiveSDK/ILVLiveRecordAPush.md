@@ -5,7 +5,7 @@
             ILVText iliveText = new ILVText("ss", "", ILVLiveConstants.GROUP_TYPE);
             iliveText.setText("" + textInput.getText());
             //发送消息
-            ILVLiveManager.getInstance().sendText(iliveText, new ILiveCallBack() {
+            ILiveRoomManager.getInstance().sendText(iliveText, new ILiveCallBack() {
                 @Override
                 public void onSuccess(Object data) {
                     Toast.makeText(LiveActivity.this, "send succ!", Toast.LENGTH_SHORT).show();
@@ -28,7 +28,7 @@
             cmd.setType(ILVLiveConstants.C2C_TYPE);
             cmd.setDestid("" + memId.getText());
             cmd.setParam("");
-            ILVLiveManager.getInstance().sendCustomCmd(cmd, new ILiveCallBack<TIMMessage>() {
+            ILiveRoomManager.getInstance().sendCustomCmd(cmd, new ILiveCallBack<TIMMessage>() {
                 @Override
                 public void onSuccess(TIMMessage data) {
                     Toast.makeText(LiveActivity.this, "invite send succ!", Toast.LENGTH_SHORT).show();
@@ -49,7 +49,7 @@
             cmd.setType(ILVLiveConstants.C2C_TYPE);
             cmd.setDestid("" + memId.getText());
             cmd.setParam("");
-            ILVLiveManager.getInstance().sendCustomCmd(cmd, new ILiveCallBack<TIMMessage>() {
+            ILiveRoomManager.getInstance().sendCustomCmd(cmd, new ILiveCallBack<TIMMessage>() {
                 @Override
                 public void onSuccess(TIMMessage data) {
                     Toast.makeText(LiveActivity.this, "invite send succ!", Toast.LENGTH_SHORT).show();
@@ -77,7 +77,7 @@
                     case ILVLiveConstants.ILVLIVE_CMD_INVITE:
                         Toast.makeText(LiveActivity.this, "onNewCmdMsg : received a invitation! ", Toast.LENGTH_SHORT).show();
                         ILiveLog.d(TAG, "ILVB-LiveApp|received ");
-                        ILVLiveManager.getInstance().upToVideoMember(ILVLiveConstants.VIDEO_MEMBER_AUTH, ILVLiveConstants.VIDEO_MEMBER_ROLE, new ILiveCallBack() {
+                        ILiveRoomManager.getInstance().upToVideoMember(ILVLiveConstants.VIDEO_MEMBER_AUTH, ILVLiveConstants.VIDEO_MEMBER_ROLE, new ILiveCallBack() {
                             @Override
                             public void onSuccess(Object data) {
 
@@ -93,7 +93,7 @@
 
                         break;
                     case ILVLiveConstants.ILVLIVE_CMD_INVITE_CLOSE:
-                        ILVLiveManager.getInstance().downToNorMember(ILVLiveConstants.NORMAL_MEMBER_AUTH, ILVLiveConstants.NORMAL_MEMBER_ROLE, new ILiveCallBack() {
+                        ILiveRoomManager.getInstance().downToNorMember(ILVLiveConstants.NORMAL_MEMBER_AUTH, ILVLiveConstants.NORMAL_MEMBER_ROLE, new ILiveCallBack() {
                             @Override
                             public void onSuccess(Object data) {
 
