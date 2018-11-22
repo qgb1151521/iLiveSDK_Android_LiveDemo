@@ -1,9 +1,6 @@
 # iLiveSDK
 iLiveSDK 提供了账号登录，音视频互动，文本互动等基础功能，顺利的话一天之内即可集成音视频能力。
 
-![](https://zhaoyang21cn.github.io/iLiveSDK_Help/readme_img/ilivesdk_construction.png)
-
-
 ## iLiveSDK导入
 
 iLiveSDK在Android Studio上开发。
@@ -23,7 +20,6 @@ compile 'com.tencent.ilivesdk:ilivesdk:1.9.5'
     (若想使用IMSDK 3.x可直接添加IMSDK版本号配置，如: compile 'com.tencent.imsdk:imsdk:3.3.2.13870.14059')
 
 [更多版本更新信息](doc/ILiveSDK/release%20note.md)
-
 
 > 进房出现角色不存在(而确认角色已配置时)
 可参考[进房失败(Role no exists)](doc/ILiveSDK/NoRoleErr.md)
