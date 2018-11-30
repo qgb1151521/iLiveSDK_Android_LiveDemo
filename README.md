@@ -8,16 +8,15 @@ iLiveSDK在Android Studio上开发。
 
 
 核心功能     
-compile 'com.tencent.ilivesdk:ilivesdk:1.9.5'      
+compile 'com.tencent.ilivesdk:ilivesdk:1.9.6'      
 
             
 ## SDK最近更新说明
 
-### V1.9.5(2018-10-22)
- - 云上环境支持手动推流录制
- - 进房角色不存在时直接报错
- - 解除对IMSDK版本的强依赖(**由于IMSDK支持多加架构，需配置为armeabi/armeabi-v7a架构**)<br />
-    (若想使用IMSDK 3.x可直接添加IMSDK版本号配置，如: compile 'com.tencent.imsdk:imsdk:3.3.2.13870.14059')
+### V1.9.6(2018-11-30)
+ - 更新AVSDK到1.9.9.1067
+ - 在网络较差的情况下优化先保证音频
+ - 修复已知问题
 
 [更多版本更新信息](doc/ILiveSDK/release%20note.md)
 
