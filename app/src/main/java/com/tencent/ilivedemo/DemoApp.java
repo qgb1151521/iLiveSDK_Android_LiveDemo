@@ -23,9 +23,7 @@ public class DemoApp extends Application {
             // 初始化LiveSDK
             ILiveSDK.getInstance().setCaptureMode(ILiveConstants.CAPTURE_MODE_SURFACETEXTURE);
             ILiveLog.setLogLevel(ILiveLog.TILVBLogLevel.DEBUG);
-            ILiveSDK.getInstance().initSdk(this, 1400028096, 11851);
-            // 老用户使用IMSDK通道
-            ILiveSDK.getInstance().setChannelMode(CommonConstants.E_ChannelMode.E_ChannelIMSDK);
+            ILiveSDK.getInstance().initSdk(this, 1400028096);
             ILiveRoomManager.getInstance().init(new ILiveRoomConfig()
                     .setRoomMsgListener(MessageObservable.getInstance()));
         }
