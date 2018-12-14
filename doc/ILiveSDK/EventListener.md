@@ -19,6 +19,7 @@ iOS添加:
     - [注销成功事件onLogoutSuccess](#注销成功事件onlogoutsuccess)
     - [注销失败事件onLogoutFailed](#注销失败事件onlogoutfailed)
     - [帐号下线事件onForceOffline](#帐号下线事件onforceoffline)
+    - [自定义角色配置事件onSetSpearConfigEvent](#定义角色配置事件onsetspearconfigevent)
 - 房间事件
     - [创建房间成功事件onCreateRoomSuccess](#创建房间成功事件oncreateroomsuccess)
     - [创建房间失败事件onCreateRoomFailed](#创建房间失败事件oncreateroomfailed)
@@ -83,6 +84,15 @@ userId|String|用户登录标识
 module|String|错误模块
 errCode|int|错误id
 errMsg|String|错误描述
+
+#### 自定义角色配置事件onSetSpearConfigEvent
+调用iLiveLoginWithSpear接口登录时参生
+
+参数名|参数类型|描述
+:--:|:--:|:--
+result|int|配置结果,0为成功
+errMsg|String|错误描述
+
 
 #### 创建房间成功事件onCreateRoomSuccess
 由创建房间createRoom接口产生
