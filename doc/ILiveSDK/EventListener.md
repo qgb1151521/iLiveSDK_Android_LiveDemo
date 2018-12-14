@@ -19,7 +19,7 @@ iOS添加:
     - [注销成功事件onLogoutSuccess](#注销成功事件onlogoutsuccess)
     - [注销失败事件onLogoutFailed](#注销失败事件onlogoutfailed)
     - [帐号下线事件onForceOffline](#帐号下线事件onforceoffline)
-    - [自定义角色配置事件onSetSpearConfigEvent](#定义角色配置事件onsetspearconfigevent)
+    - [自定义角色配置事件onSetSpearConfigEvent](#自定义角色配置事件onsetspearconfigevent)
 - 房间事件
     - [创建房间成功事件onCreateRoomSuccess](#创建房间成功事件oncreateroomsuccess)
     - [创建房间失败事件onCreateRoomFailed](#创建房间失败事件oncreateroomfailed)
